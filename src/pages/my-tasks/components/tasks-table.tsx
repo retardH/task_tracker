@@ -1,25 +1,17 @@
 import DataTable from "@/components/ui/data-table";
+import { ITask } from "@/models";
 import {
   ColumnDef,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
-type Task = {
-  staffId: string;
-  staffName: string;
-  from: string;
-  to: string;
-  status: string;
-  remark: string;
-};
-
-const tasks: Task[] = [
+const tasks: ITask[] = [
   {
     staffId: "00002",
     staffName: "Htet Zarni",
-    from: "9:00 AM",
-    to: "12:00 AM",
+    fromTime: "9:00 AM",
+    toTime: "12:00 AM",
     status: "In Progress",
     remark:
       "Lorem ipsum dolor sit amet consectetur adipisinsequuntur ea voluptatem rerum ad. ",
@@ -27,8 +19,8 @@ const tasks: Task[] = [
   {
     staffId: "00002",
     staffName: "Htet Zarni",
-    from: "9:00 AM",
-    to: "12:00 AM",
+    fromTime: "9:00 AM",
+    toTime: "12:00 AM",
     status: "In Progress",
     remark:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. repellendus reiciendis consequuntur ea voluptatem rerum ad. ",
@@ -36,8 +28,8 @@ const tasks: Task[] = [
   {
     staffId: "00002",
     staffName: "Htet Zarni",
-    from: "9:00 AM",
-    to: "12:00 AM",
+    fromTime: "9:00 AM",
+    toTime: "12:00 AM",
     status: "In Progress",
     remark:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Insequuntur ea voluptatem rerum ad. ",
@@ -45,8 +37,8 @@ const tasks: Task[] = [
   {
     staffId: "00002",
     staffName: "Htet Zarni",
-    from: "9:00 AM",
-    to: "12:00 AM",
+    fromTime: "9:00 AM",
+    toTime: "12:00 AM",
     status: "In Progress",
     remark:
       "Lorem ipsum dolor sit amet consectetur reiciendis consequuntur ea voluptatem rerum ad. ",
@@ -54,10 +46,12 @@ const tasks: Task[] = [
 ];
 
 const TasksTable = () => {
-  const columns: ColumnDef<Task>[] = [
+  const columns: ColumnDef<ITask>[] = [
     {
       accessorKey: "staffId",
-      header: "Staff Id",
+      header: () => {
+        return <div>Staff Id</div>;
+      },
       cell: ({ row }) => {
         return <div className="min-w-[100px]">{row.original.staffId}</div>;
       },
@@ -70,17 +64,17 @@ const TasksTable = () => {
       },
     },
     {
-      accessorKey: "from",
+      accessorKey: "fromTime",
       header: "From Time",
       cell: ({ row }) => {
-        return <div className="min-w-[120px]">{row.original.from}</div>;
+        return <div className="min-w-[120px]">{row.original.fromTime}</div>;
       },
     },
     {
-      accessorKey: "to",
+      accessorKey: "toTime",
       header: "To Time",
       cell: ({ row }) => {
-        return <div className="min-w-[120px]">{row.original.to}</div>;
+        return <div className="min-w-[120px]">{row.original.toTime}</div>;
       },
     },
     {
