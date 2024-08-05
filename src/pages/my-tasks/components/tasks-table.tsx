@@ -4,52 +4,14 @@ import { ITask } from "@/models";
 import {
   ColumnDef,
   getCoreRowModel,
+  getPaginationRowModel,
+  PaginationState,
   useReactTable,
 } from "@tanstack/react-table";
 import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-
-const tasks: ITask[] = [
-  {
-    staffId: "00002",
-    staffName: "Htet Zarni",
-    date: "02-08-2024",
-    fromTime: "9:00 AM",
-    toTime: "12:00 AM",
-    status: "In Progress",
-    remark:
-      "Lorem ipsum dolor sit amet consectetur adipisinsequuntur ea voluptatem rerum ad. ",
-  },
-  {
-    staffId: "00002",
-    staffName: "Htet Zarni",
-    date: "02-08-2024",
-    fromTime: "9:00 AM",
-    toTime: "12:00 AM",
-    status: "In Progress",
-    remark:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. repellendus reiciendis consequuntur ea voluptatem rerum ad. ",
-  },
-  {
-    staffId: "00002",
-    staffName: "Htet Zarni",
-    date: "02-08-2024",
-    fromTime: "9:00 AM",
-    toTime: "12:00 AM",
-    status: "In Progress",
-    remark:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Insequuntur ea voluptatem rerum ad. ",
-  },
-  {
-    staffId: "00002",
-    staffName: "Htet Zarni",
-    date: "02-08-2024",
-    fromTime: "9:00 AM",
-    toTime: "12:00 AM",
-    status: "In Progress",
-    remark:
-      "Lorem ipsum dolor sit amet consectetur reiciendis consequuntur ea voluptatem rerum ad. ",
-  },
-];
+import { useState } from "react";
+import { tasks } from "@/constants";
+import { Chip } from "@/components/ui/chip";
 
 const TasksTable = () => {
   const columns: ColumnDef<ITask>[] = [
@@ -94,7 +56,11 @@ const TasksTable = () => {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => {
-        return <div className="min-w-[120px]">{row.original.status}</div>;
+        return (
+          <div className="min-w-[120px]">
+            <Chip color="success">{row.original.status}</Chip>
+          </div>
+        );
       },
     },
     {
@@ -105,9 +71,9 @@ const TasksTable = () => {
       },
     },
     {
-      accessorKey: "he",
+      id: "actions",
       header: "",
-      cell: ({}) => {
+      cell: () => {
         return (
           <div className="min-w-[100px] flex">
             <Button size={"icon"} variant={"ghost"}>
@@ -122,10 +88,20 @@ const TasksTable = () => {
     },
   ];
 
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+
   const table = useReactTable({
     data: tasks,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
+    state: {
+      pagination: pagination,
+    },
   });
 
   return <DataTable table={table} columns={columns} />;
