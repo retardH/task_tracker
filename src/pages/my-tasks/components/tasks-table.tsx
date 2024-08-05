@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import DataTable from "@/components/ui/data-table";
 import { ITask } from "@/models";
 import {
@@ -5,11 +6,13 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 
 const tasks: ITask[] = [
   {
     staffId: "00002",
     staffName: "Htet Zarni",
+    date: "02-08-2024",
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "In Progress",
@@ -19,6 +22,7 @@ const tasks: ITask[] = [
   {
     staffId: "00002",
     staffName: "Htet Zarni",
+    date: "02-08-2024",
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "In Progress",
@@ -28,6 +32,7 @@ const tasks: ITask[] = [
   {
     staffId: "00002",
     staffName: "Htet Zarni",
+    date: "02-08-2024",
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "In Progress",
@@ -37,6 +42,7 @@ const tasks: ITask[] = [
   {
     staffId: "00002",
     staffName: "Htet Zarni",
+    date: "02-08-2024",
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "In Progress",
@@ -61,6 +67,13 @@ const TasksTable = () => {
       header: "Staff Name",
       cell: ({ row }) => {
         return <div className="min-w-[120px]">{row.original.staffName}</div>;
+      },
+    },
+    {
+      accessorKey: "date",
+      header: "Date",
+      cell: ({ row }) => {
+        return <div className="min-w-[120px]">{row.original.date}</div>;
       },
     },
     {
@@ -89,6 +102,22 @@ const TasksTable = () => {
       header: "Remark",
       cell: ({ row }) => {
         return <div className="min-w-[300px]">{row.original.remark}</div>;
+      },
+    },
+    {
+      accessorKey: "he",
+      header: "",
+      cell: ({}) => {
+        return (
+          <div className="min-w-[100px] flex">
+            <Button size={"icon"} variant={"ghost"}>
+              <Pencil1Icon />
+            </Button>
+            <Button size={"icon"} variant={"ghost"}>
+              <TrashIcon />
+            </Button>
+          </div>
+        );
       },
     },
   ];
