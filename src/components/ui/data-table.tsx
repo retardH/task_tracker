@@ -37,7 +37,7 @@ const DataTable = <TData, TValue>({
               >
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead className=" text-white" key={header.id}>
+                    <TableHead className="py-4 text-white" key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
