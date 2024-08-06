@@ -14,28 +14,22 @@ import { tasks } from "@/constants";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
-const TasksTable = () => {
+const AllTasksTable = () => {
   const columns: ColumnDef<ITask>[] = [
-    // {
-    //   accessorKey: "staffId",
-    //   header: () => {
-    //     return <div>Staff Id</div>;
-    //   },
-    //   cell: ({ row }) => {
-    //     return (
-    //       <div className="font-medium min-w-[100px]">
-    //         {row.original.staffId}
-    //       </div>
-    //     );
-    //   },
-    // },
-    // {
-    //   accessorKey: "staffName",
-    //   header: "Staff Name",
-    //   cell: ({ row }) => {
-    //     return <div className="min-w-[120px]">{row.original.staffName}</div>;
-    //   },
-    // },
+    {
+      id: "staff",
+      header: "Staff",
+      cell: ({ row }) => {
+        return (
+          <div className="flex min-w-[120px] flex-col items-start gap-1">
+            <h4 className="font-medium">{row.original.staffName}</h4>
+            <span className="text-xs text-accent-foreground">
+              {row.original.staffId}
+            </span>
+          </div>
+        );
+      },
+    },
     {
       accessorKey: "date",
       header: "Date",
@@ -100,7 +94,7 @@ const TasksTable = () => {
         const status = row.original.status;
         return (
           <div
-            className={cn("min-w-[120px] text-sm font-medium text-center", {
+            className={cn("min-w-[120px] text-center text-sm font-medium", {
               "text-blue-500": status === "In Progress",
               "text-amber-500": status === "Pending",
               "text-green-500": status === "Complete",
@@ -125,7 +119,7 @@ const TasksTable = () => {
       header: "",
       cell: () => {
         return (
-          <div className="min-w-[80px] flex justify-end">
+          <div className="flex min-w-[80px] justify-end">
             <Button size={"icon"} variant={"ghost"}>
               <Pencil1Icon />
             </Button>
@@ -157,4 +151,4 @@ const TasksTable = () => {
   return <DataTable table={table} columns={columns} />;
 };
 
-export default TasksTable;
+export default AllTasksTable;

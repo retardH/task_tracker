@@ -1,6 +1,5 @@
 import TasksTable from "./components/tasks-table";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router";
 import { useState } from "react";
 import {
   Dialog,
@@ -12,15 +11,13 @@ import {
 import PersonalTaskForm from "@/components/form/task-form";
 
 const MainPage = () => {
-  const navigate = useNavigate();
-
   const [isopenDialog, setisOpenDialog] = useState(false);
 
   return (
     <div>
       <div className="p-8 space-y-2">
-        <div className=" flex w-full items-start justify-between">
-          <h4 className="mb-6 text-xl text-primary font-semibold">My Tasks</h4>
+        <div className="flex w-full mb-4 items-center justify-between">
+          <h4 className="text-xl text-primary font-semibold">My Tasks</h4>
           <div className="flex gap-4 items-center justify-between ">
             <Dialog open={isopenDialog} onOpenChange={setisOpenDialog}>
               <DialogTrigger asChild>
@@ -33,7 +30,6 @@ const MainPage = () => {
                 <PersonalTaskForm />
               </DialogContent>
             </Dialog>
-            <Button onClick={() => navigate("/all-tasks")}>All Tasks</Button>
           </div>
         </div>
 

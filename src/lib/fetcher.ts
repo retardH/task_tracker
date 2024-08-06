@@ -1,6 +1,6 @@
 import axios, {
-  AxiosError,
-  InternalAxiosRequestConfig,
+  type AxiosError,
+  type InternalAxiosRequestConfig,
   isAxiosError,
 } from "axios";
 
@@ -19,7 +19,7 @@ const onRequestErr = async (error: AxiosError): Promise<AxiosError> => {
 
 apiClient.interceptors.request.use(onRequest, onRequestErr);
 
-const fetcher = async (method: "post" | "get", reqUrl: string, data: any) => {
+const fetcher = async <D>(method: "post" | "get", reqUrl: string, data: D) => {
   const token = localStorage.getItem("token");
 
   const headers = {

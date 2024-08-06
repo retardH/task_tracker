@@ -3,13 +3,14 @@ import { cva, VariantProps } from "class-variance-authority";
 import { ReactNode } from "react";
 
 const chipVariants = cva(
-  "rounded-full text-center px-4 text-xs py-2 min-w-[80px] max-w-max",
+  "rounded-lg text-center px-2.5 text-xs py-1.5 min-w-[80px] max-w-max",
   {
     variants: {
       color: {
-        default: "bg-primary text-white",
+        default: "bg-blue-600/40 border border-blue-600",
         error: "bg-destructive text-destructive-foreground",
         success: "bg-green-600 text-white",
+        pending: "bg-amber-500 text-white",
       },
     },
     defaultVariants: {
