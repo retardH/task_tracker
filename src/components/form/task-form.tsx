@@ -12,6 +12,23 @@ import {
 } from "../ui/form";
 import { Button } from "../ui/button";
 import DatePicker from "../ui/date-picker";
+import {
+  Select,
+  SelectGroup,
+  SelectTrigger,
+  SelectContent,
+  SelectValue,
+  // SelectLabel,
+  SelectItem,
+} from "../ui/select";
+
+import {
+  dummyPojectList,
+  dummyTaskTypesList,
+  dummySubTaskTypesList,
+  dummyComplexityList,
+  dummystatusList,
+} from "@/constants";
 
 const formSchema = z.object({
   staffId: z.string({
@@ -29,19 +46,24 @@ const formSchema = z.object({
   toTime: z.string({
     required_error: "To time is required",
   }),
-  // remark: z.string().optional(),
+  remark: z.string().optional(),
   // status: z.enum(["Pending", "Planned", "InProgress", "Complete"], {
-  //   required_error: "Status is required",
-  // }),
-  // task: z.string({
-  //   required_error: "Task is required",
-  // }),
-  // subTask: z.string({
-  //   required_error: "Sub-task is required",
-  // }),
-  // project: z.string({
-  //   required_error: "Project is required",
-  // }),
+
+  task: z.string({
+    required_error: "Task is required",
+  }),
+  subTask: z.string({
+    required_error: "Sub-task is required",
+  }),
+  project: z.string({
+    required_error: "Project is required",
+  }),
+  status: z.string({
+    required_error: "Project is required",
+  }),
+  complexity: z.string({
+    required_error: "Project is required",
+  }),
 });
 
 const PersonalTaskForm = () => {
@@ -130,6 +152,181 @@ const PersonalTaskForm = () => {
                   <FormLabel>To Time</FormLabel>
                   <FormControl>
                     <Input {...field} type="time" placeholder="eg, Mg Kyaw" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+          <FormField
+            control={form.control}
+            name="project"
+            render={({ field }) => {
+              return (
+                <FormItem className="col-span-1">
+                  <FormLabel>Project</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select A project" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {/* <SelectLabel>Project</SelectLabel> */}
+                          {dummyPojectList.map((project) => (
+                            <SelectItem value={`${project.id}`}>
+                              {project.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+          <FormField
+            control={form.control}
+            name="task"
+            render={({ field }) => {
+              return (
+                <FormItem className="col-span-1">
+                  <FormLabel>Task</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select A Task" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {/* <SelectLabel>Project</SelectLabel> */}
+                          {dummyTaskTypesList.map((task) => (
+                            <SelectItem value={`${task.id}`}>
+                              {task.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+          <FormField
+            control={form.control}
+            name="subTask"
+            render={({ field }) => {
+              return (
+                <FormItem className="col-span-1">
+                  <FormLabel>Sub Task</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select A Sub Task" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {/* <SelectLabel>Project</SelectLabel> */}
+                          {dummySubTaskTypesList.map((subTask) => (
+                            <SelectItem value={`${subTask.id}`}>
+                              {subTask.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => {
+              return (
+                <FormItem className="col-span-1">
+                  <FormLabel>Sub Task</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select A Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {/* <SelectLabel>Project</SelectLabel> */}
+                          {dummystatusList.map((status) => (
+                            <SelectItem value={`${status.id}`}>
+                              {status.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+          <FormField
+            control={form.control}
+            name="complexity"
+            render={({ field }) => {
+              return (
+                <FormItem className="col-span-1">
+                  <FormLabel>Sub Task</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select A Complexity" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {/* <SelectLabel>Project</SelectLabel> */}
+                          {dummyComplexityList.map((complexity) => (
+                            <SelectItem value={`${complexity.id}`}>
+                              {complexity.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+          <FormField
+            control={form.control}
+            name="remark"
+            render={({ field }) => {
+              return (
+                <FormItem className="col-span-1">
+                  <FormLabel>Remark</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
