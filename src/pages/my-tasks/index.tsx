@@ -17,7 +17,7 @@ const MainPage = () => {
     <div>
       <div className="p-8 space-y-2">
         <div className="flex w-full mb-4 items-center justify-between">
-          <h4 className="text-xl text-primary font-semibold">My Tasks</h4>
+          <h4 className="text-2xl text-primary font-semibold">My Tasks</h4>
           <div className="flex gap-4 items-center justify-between ">
             <Dialog open={isopenDialog} onOpenChange={setisOpenDialog}>
               <DialogTrigger asChild>

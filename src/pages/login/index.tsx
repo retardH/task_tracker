@@ -48,7 +48,7 @@ const LoginPage = () => {
     <main className="w-full h-[100dvh] flex items-center justify-center ">
       <img src= {red} alt=""  className="absolute top-0 left-0 w-[200px]"/>
       <img src= {blue} alt=""  className="absolute bottom-0 right-0 w-[200px]"/>
-      <section className="w-[500px] h-[400px] bg-zinc-100 shadow-sm rounded-md p-4 ">
+      <section className="w-[500px] h-[400px] border-2 border-primary shadow-sm rounded-md p-4 ">
         {/* <h2 className="text-zinc-950">Login to Continue</h2> */}
         <div className="flex w-full items-center justify-center gap-3">
           <img src={logo} alt="" className="rounded-sm w-[50px]" />
@@ -72,7 +72,7 @@ const LoginPage = () => {
                 );
               }}
             />
-            <FormField
+            <FormField 
               control={form.control}
               name="password"
               render={({ field }) => {
