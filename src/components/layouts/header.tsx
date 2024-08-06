@@ -13,25 +13,25 @@ import { Button } from "../ui/button";
 
 const Header = () => {
   return (
-    <header className="flex py-4 px-8 items-center border-b border-b-input shadow-sm justify-between">
+    <header className="flex py-4 px-8 items-center border-b border-b-input shadow-sm justify-between bg-primary">
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
           <img src={logo} width={30} className="rounded-md" />
-          <h2 className="text-primary font-bold text-2xl">Tasktis</h2>
+          <h2 className="text-primary font-bold text-2xl text-white">Smart Task Master</h2>
         </div>
         <div className="flex items-start gap-4">
-          <Button variant="link" size="default" className="px-0">
+          <Button variant="link" size="default" className="px-0 text-white">
             <NavLink
               to="/"
-              className={({ isActive }) => (isActive ? "font-semibold" : "")}
+              className={({ isActive }) => (isActive ? "text-amber-400" : "")}
             >
               My Tasks
             </NavLink>
           </Button>
-          <Button variant="link" size="default" className="px-0">
+          <Button variant="link" size="default" className="px-0 text-white">
             <NavLink
               to="/all-tasks"
-              className={({ isActive }) => (isActive ? "font-semibold" : "")}
+              className={({ isActive }) => (isActive ? "text-amber-400" : "")}
             >
               All Tasks
             </NavLink>
@@ -42,8 +42,8 @@ const Header = () => {
         <DropdownMenuTrigger asChild>
           <div className="flex items-center gap-2">
             <div className="flex flex-col items-center gap-1">
-              <h4 className="text-sm font-medium">Htet Zarni</h4>
-              <p className="text-xs font-medium text-foreground">HRIS Team</p>
+              <h4 className="text-sm font-medium text-white">Htet Zarni</h4>
+              <p className="text-xs font-medium text-foreground text-white">HRIS Team</p>
             </div>
             <Avatar>
               <AvatarImage

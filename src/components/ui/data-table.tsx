@@ -39,11 +39,11 @@ const DataTable = <TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className="bg-secondary hover:bg-secondary"
+                className="bg-primary hover:bg-primary"
               >
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead className="py-4 text-center" key={header.id}>
+                    <TableHead className="py-4 text-center text-white" key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(

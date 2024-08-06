@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import DataTable from "@/components/ui/data-table";
 import { ITask } from "@/models";
 import {
@@ -8,7 +8,7 @@ import {
   PaginationState,
   useReactTable,
 } from "@tanstack/react-table";
-import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
+// import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { tasks } from "@/constants";
 import { format } from "date-fns";
@@ -114,22 +114,22 @@ const AllTasksTable = () => {
         );
       },
     },
-    {
-      id: "actions",
-      header: "",
-      cell: () => {
-        return (
-          <div className="flex min-w-[80px] justify-end">
-            <Button size={"icon"} variant={"ghost"}>
-              <Pencil1Icon />
-            </Button>
-            <Button size={"icon"} variant={"ghost"}>
-              <TrashIcon />
-            </Button>
-          </div>
-        );
-      },
-    },
+    // {
+    //   id: "actions",
+    //   header: "",
+    //   cell: () => {
+    //     return (
+    //       <div className="flex min-w-[80px] justify-end">
+    //         <Button size={"icon"} variant={"ghost"}>
+    //           <Pencil1Icon />
+    //         </Button>
+    //         <Button size={"icon"} variant={"ghost"}>
+    //           <TrashIcon />
+    //         </Button>
+    //       </div>
+    //     );
+    //   },
+    // },
   ];
 
   const [pagination, setPagination] = useState<PaginationState>({
