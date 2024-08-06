@@ -107,7 +107,7 @@ export const tasks: ITask[] = [
     date: "02-08-2024",
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
-    status: "Pending",
+    status: "Complete",
     remark:
       "Lorem ipsum dolor sit amet consectetur adipisinsequuntur ea voluptatem rerum ad. ",
     taskId: "1",

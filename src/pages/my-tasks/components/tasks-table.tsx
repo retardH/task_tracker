@@ -2,17 +2,34 @@ import { Button } from "@/components/ui/button";
 import DataTable from "@/components/ui/data-table";
 import { ITask } from "@/models";
 import {
-  ColumnDef,
+  type ColumnDef,
   getCoreRowModel,
   getPaginationRowModel,
-  PaginationState,
+  type PaginationState,
   useReactTable,
+  type VisibilityState,
 } from "@tanstack/react-table";
-import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
+import {
+  CheckCircledIcon,
+  LapTimerIcon,
+  MixerVerticalIcon,
+  Pencil1Icon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
+import React, { useState } from "react";
 import { tasks } from "@/constants";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+const statusIconMapping: Record<string, React.ReactNode> = {
+  "In Progress": <LapTimerIcon className="h-4 w-4" />,
+  Complete: <CheckCircledIcon className="h-4 w-4" />,
+};
 
 const TasksTable = () => {
   const columns: ColumnDef<ITask>[] = [
@@ -99,13 +116,8 @@ const TasksTable = () => {
       cell: ({ row }) => {
         const status = row.original.status;
         return (
-          <div
-            className={cn("min-w-[120px] text-sm font-medium text-center", {
-              "text-blue-500": status === "In Progress",
-              "text-amber-500": status === "Pending",
-              "text-green-500": status === "Complete",
-            })}
-          >
+          <div className="flex min-w-[150px] items-center justify-center gap-2">
+            {statusIconMapping[status]}
             {status}
           </div>
         );
@@ -125,7 +137,7 @@ const TasksTable = () => {
       header: "",
       cell: () => {
         return (
-          <div className="min-w-[80px] flex justify-end">
+          <div className="flex min-w-[80px] justify-end">
             <Button size={"icon"} variant={"ghost"}>
               <Pencil1Icon />
             </Button>
@@ -143,18 +155,59 @@ const TasksTable = () => {
     pageSize: 10,
   });
 
+  const [visibilityState, setVisibilityState] = useState<VisibilityState>({});
+
   const table = useReactTable({
     data: tasks,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
+    onColumnVisibilityChange: setVisibilityState,
     state: {
       pagination: pagination,
+      columnVisibility: visibilityState,
     },
   });
 
-  return <DataTable table={table} columns={columns} />;
+  return (
+    <>
+      <div className="flex items-center justify-between">
+        <div></div>
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="ml-auto inline-flex items-center gap-1"
+              >
+                <MixerVerticalIcon />
+                <span>View</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(val) => column.toggleVisibility(!!val)}
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+      <DataTable table={table} columns={columns} />
+    </>
+  );
 };
 
 export default TasksTable;

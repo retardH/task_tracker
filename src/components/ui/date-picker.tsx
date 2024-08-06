@@ -23,7 +23,9 @@ const DatePicker = ({
         <Button
           variant="outline"
           disabled={disabled}
-          className={cn("w-full justify-start text-left font-normal")}
+          className={cn(
+            "w-full justify-start text-left font-normal hover:bg-none",
+          )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? format(date, dateFormat) : <span>Pick a date</span>}

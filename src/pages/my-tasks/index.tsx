@@ -13,12 +13,17 @@ import PersonalTaskForm from "@/components/form/task-form";
 const MainPage = () => {
   const [isopenDialog, setisOpenDialog] = useState(false);
 
+  // (async function () {
+  //   const key = await importKey("258ASEZSKEY00000");
+  //   const { encrypted } = await encryptPassword("Kbzdev@@0", key);
+  //   console.log("encrypted psw ", arrayBufferToBase64(encrypted));
+  // })();
   return (
     <div>
-      <div className="p-8 space-y-2">
-        <div className="flex w-full mb-4 items-center justify-between">
-          <h4 className="text-xl text-primary font-semibold">My Tasks</h4>
-          <div className="flex gap-4 items-center justify-between ">
+      <div className="space-y-2 p-8">
+        <div className="mb-4 flex w-full items-center justify-between">
+          <h4 className="text-2xl font-semibold text-primary">My Tasks</h4>
+          <div className="flex items-center justify-between gap-4">
             <Dialog open={isopenDialog} onOpenChange={setisOpenDialog}>
               <DialogTrigger asChild>
                 <Button>Create</Button>
@@ -32,7 +37,6 @@ const MainPage = () => {
             </Dialog>
           </div>
         </div>
-
         <TasksTable />
       </div>
     </div>

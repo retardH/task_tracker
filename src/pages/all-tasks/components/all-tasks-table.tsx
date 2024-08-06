@@ -2,17 +2,21 @@
 import DataTable from "@/components/ui/data-table";
 import { ITask } from "@/models";
 import {
-  ColumnDef,
+  type ColumnDef,
   getCoreRowModel,
   getPaginationRowModel,
-  PaginationState,
+  type PaginationState,
   useReactTable,
 } from "@tanstack/react-table";
-// import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { tasks } from "@/constants";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { CheckCircledIcon, LapTimerIcon } from "@radix-ui/react-icons";
+
+const statusIconMapping: Record<string, React.ReactNode> = {
+  "In Progress": <LapTimerIcon className="h-4 w-4" />,
+  Complete: <CheckCircledIcon className="h-4 w-4" />,
+};
 
 const AllTasksTable = () => {
   const columns: ColumnDef<ITask>[] = [
@@ -93,13 +97,8 @@ const AllTasksTable = () => {
       cell: ({ row }) => {
         const status = row.original.status;
         return (
-          <div
-            className={cn("min-w-[120px] text-center text-sm font-medium", {
-              "text-blue-500": status === "In Progress",
-              "text-amber-500": status === "Pending",
-              "text-green-500": status === "Complete",
-            })}
-          >
+          <div className="flex min-w-[150px] items-center justify-center gap-2">
+            {statusIconMapping[status]}
             {status}
           </div>
         );

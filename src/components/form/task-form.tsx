@@ -18,7 +18,6 @@ import {
   SelectTrigger,
   SelectContent,
   SelectValue,
-  // SelectLabel,
   SelectItem,
 } from "../ui/select";
 
@@ -26,14 +25,17 @@ import {
   dummyPojectList,
   dummyTaskTypesList,
   dummySubTaskTypesList,
-  dummyComplexityList,
+  // dummyComplexityList,
   dummystatusList,
 } from "@/constants";
+import { Textarea } from "../ui/textarea";
 
 const formSchema = z.object({
-  staffId: z.string({
-    required_error: "Staff id is required",
-  }),
+  staffId: z
+    .string({
+      required_error: "Staff id is required",
+    })
+    .min(6, "Staff id must contain at least 6 characters"),
   staffName: z.string({
     required_error: "Staff name is required",
   }),
@@ -69,16 +71,26 @@ const formSchema = z.object({
 const PersonalTaskForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      staffId: "",
+      staffName: "",
+      date: undefined,
+      fromTime: "",
+      toTime: "",
+      project: "",
+      status: "",
+      remark: "",
+    },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log(data);
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="grid gap-4 grid-cols-2">
+        <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="staffId"
@@ -158,38 +170,7 @@ const PersonalTaskForm = () => {
               );
             }}
           />
-          <FormField
-            control={form.control}
-            name="project"
-            render={({ field }) => {
-              return (
-                <FormItem className="col-span-1">
-                  <FormLabel>Project</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select A project" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {/* <SelectLabel>Project</SelectLabel> */}
-                          {dummyPojectList.map((project) => (
-                            <SelectItem value={`${project.id}`}>
-                              {project.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
+
           <FormField
             control={form.control}
             name="task"
@@ -203,13 +184,13 @@ const PersonalTaskForm = () => {
                       defaultValue={field.value}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select A Task" />
+                        <SelectValue placeholder="Select a task" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
                           {/* <SelectLabel>Project</SelectLabel> */}
                           {dummyTaskTypesList.map((task) => (
-                            <SelectItem value={`${task.id}`}>
+                            <SelectItem key={task.id} value={`${task.id}`}>
                               {task.name}
                             </SelectItem>
                           ))}
@@ -235,14 +216,52 @@ const PersonalTaskForm = () => {
                       defaultValue={field.value}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select A Sub Task" />
+                        <SelectValue placeholder="Select a sub task" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
                           {/* <SelectLabel>Project</SelectLabel> */}
                           {dummySubTaskTypesList.map((subTask) => (
-                            <SelectItem value={`${subTask.id}`}>
+                            <SelectItem
+                              key={subTask.id}
+                              value={`${subTask.id}`}
+                            >
                               {subTask.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+          <FormField
+            control={form.control}
+            name="project"
+            render={({ field }) => {
+              return (
+                <FormItem className="col-span-1">
+                  <FormLabel>Project</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a project" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {/* <SelectLabel>Project</SelectLabel> */}
+                          {dummyPojectList.map((project) => (
+                            <SelectItem
+                              key={project.id}
+                              value={`${project.id}`}
+                            >
+                              {project.name}
                             </SelectItem>
                           ))}
                         </SelectGroup>
@@ -260,53 +279,21 @@ const PersonalTaskForm = () => {
             render={({ field }) => {
               return (
                 <FormItem className="col-span-1">
-                  <FormLabel>Sub Task</FormLabel>
+                  <FormLabel>Status</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select A Status" />
+                        <SelectValue placeholder="Select a status" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
                           {/* <SelectLabel>Project</SelectLabel> */}
                           {dummystatusList.map((status) => (
-                            <SelectItem value={`${status.id}`}>
+                            <SelectItem key={status.id} value={`${status.id}`}>
                               {status.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-          <FormField
-            control={form.control}
-            name="complexity"
-            render={({ field }) => {
-              return (
-                <FormItem className="col-span-1">
-                  <FormLabel>Sub Task</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select A Complexity" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {/* <SelectLabel>Project</SelectLabel> */}
-                          {dummyComplexityList.map((complexity) => (
-                            <SelectItem value={`${complexity.id}`}>
-                              {complexity.name}
                             </SelectItem>
                           ))}
                         </SelectGroup>
@@ -323,10 +310,10 @@ const PersonalTaskForm = () => {
             name="remark"
             render={({ field }) => {
               return (
-                <FormItem className="col-span-1">
+                <FormItem className="col-span-2">
                   <FormLabel>Remark</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="" />
+                    <Textarea {...field} rows={4} placeholder="Type here..." />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -334,9 +321,11 @@ const PersonalTaskForm = () => {
             }}
           />
         </div>
-        <Button type="submit" className="mt-6">
-          Submit
-        </Button>
+        <div className="flex w-full justify-end">
+          <Button type="submit" size="lg" className="ml-auto mt-6">
+            Submit
+          </Button>
+        </div>
       </form>
     </Form>
   );
