@@ -31,7 +31,7 @@ const MyForm = () => {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
       <Label>
         Date
         <Controller
