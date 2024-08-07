@@ -1,4 +1,8 @@
+import { type ReactNode } from "react";
 import { ITask } from "./models";
+import { CheckCircledIcon, LapTimerIcon } from "@radix-ui/react-icons";
+
+export const baseApiUrl = "http://localhost:7166/api";
 
 export const tasks: ITask[] = [
   {
@@ -27,7 +31,7 @@ export const tasks: ITask[] = [
     },
   },
   {
-    staffId: "00003",
+    staffId: "00004",
     staffName: "Kyaw Zin Lin",
     date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
@@ -77,8 +81,8 @@ export const tasks: ITask[] = [
     },
   },
   {
-    staffId: "00003",
-    staffName: "Kyaw Zin Lin",
+    staffId: "00009",
+    staffName: "Thet Htet Paing",
     date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
@@ -359,6 +363,11 @@ export const dummyComplexityList = [
 export const dummystatusList = [
   { id: 1, name: "Pending" },
   { id: 2, name: "Planned" },
-  { id: 3, name: "InProgress" },
+  { id: 3, name: "In Progress" },
   { id: 4, name: "Complete" },
 ];
+
+export const statusWithIconMapping: Record<string, ReactNode> = {
+  "In Progress": <LapTimerIcon className="h-4 w-4" />,
+  Complete: <CheckCircledIcon className="h-4 w-4" />,
+};

@@ -22,13 +22,12 @@ import {
 } from "../ui/select";
 
 import {
-  dummyPojectList,
-  dummyTaskTypesList,
   dummySubTaskTypesList,
   // dummyComplexityList,
   dummystatusList,
 } from "@/constants";
 import { Textarea } from "../ui/textarea";
+import { useGetProjects, useGetTaskTypes } from "@/services/setup";
 
 const formSchema = z.object({
   staffId: z
@@ -63,9 +62,9 @@ const formSchema = z.object({
   status: z.string({
     required_error: "Project is required",
   }),
-  complexity: z.string({
-    required_error: "Project is required",
-  }),
+  // complexity: z.string({
+  //   required_error: "Project is required",
+  // }),
 });
 
 const PersonalTaskForm = () => {
@@ -82,6 +81,12 @@ const PersonalTaskForm = () => {
       remark: "",
     },
   });
+
+  const { data: projectsResp } = useGetProjects();
+  const projectList = projectsResp?.data ?? [];
+
+  const { data: taskTypesResp } = useGetTaskTypes();
+  const taskTypesList = taskTypesResp?.data ?? [];
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log(data);
@@ -189,7 +194,7 @@ const PersonalTaskForm = () => {
                       <SelectContent>
                         <SelectGroup>
                           {/* <SelectLabel>Project</SelectLabel> */}
-                          {dummyTaskTypesList.map((task) => (
+                          {taskTypesList.map((task) => (
                             <SelectItem key={task.id} value={`${task.id}`}>
                               {task.name}
                             </SelectItem>
@@ -256,7 +261,7 @@ const PersonalTaskForm = () => {
                       <SelectContent>
                         <SelectGroup>
                           {/* <SelectLabel>Project</SelectLabel> */}
-                          {dummyPojectList.map((project) => (
+                          {projectList.map((project) => (
                             <SelectItem
                               key={project.id}
                               value={`${project.id}`}

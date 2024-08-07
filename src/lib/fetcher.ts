@@ -4,10 +4,12 @@ import axios, {
   isAxiosError,
 } from "axios";
 
-const apiClient = axios.create();
+const apiClient = axios.create({
+  baseURL: "/api",
+});
 
 const onRequest = async (
-  config: InternalAxiosRequestConfig
+  config: InternalAxiosRequestConfig,
 ): Promise<InternalAxiosRequestConfig> => {
   axios.defaults.headers.common["Content-Type"] = "application/json";
   return config;
@@ -19,11 +21,11 @@ const onRequestErr = async (error: AxiosError): Promise<AxiosError> => {
 
 apiClient.interceptors.request.use(onRequest, onRequestErr);
 
-const fetcher = async <D>(method: "post" | "get", reqUrl: string, data: D) => {
+const fetcher = async <D>(method: "post" | "get", reqUrl: string, data?: D) => {
   const token = localStorage.getItem("token");
 
   const headers = {
-    Authorization: `Bearer ${token}`,
+    // Authorization: `Bearer ${token ?? ""}`,
     "Access-Control-Allow-Origin": "*",
   };
 
