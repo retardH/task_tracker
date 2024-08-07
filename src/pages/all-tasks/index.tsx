@@ -12,7 +12,6 @@ const AllTasksPage = () => {
         <AllTasksTable />
       </div>
 
-      <AllTasksTable />
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { ITask } from "./models";
 import { CheckCircledIcon, LapTimerIcon } from "@radix-ui/react-icons";
 
-export const baseApiUrl = "http://localhost:7166/api";
+// export const baseApiUrl = "http://localhost:7166/api";
 
 export const tasks: ITask[] = [
   {
