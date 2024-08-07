@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { ITask } from "./models";
 import { CheckCircledIcon, LapTimerIcon } from "@radix-ui/react-icons";
 
-export const baseApiUrl = "http://localhost:7166/api";
+// export const baseApiUrl = "http://localhost:7166/api";
 
 export const tasks: ITask[] = [
   {
@@ -106,9 +106,34 @@ export const tasks: ITask[] = [
     },
   },
   {
-    staffId: "00003",
+    staffId: "026734",
     staffName: "Kyaw Zin Lin",
     date: new Date("2024-08-06T00:00:00"),
+    fromTime: "9:00 AM",
+    toTime: "12:00 AM",
+    status: "Complete",
+    remark:
+      "Lorem ipsum dolor sit amet consectetur adipisinsequuntur ea voluptatem rerum ad. ",
+    taskId: "1",
+    task: {
+      id: "1",
+      name: "Development",
+    },
+    subTaskId: "1",
+    subTask: {
+      id: "1",
+      name: "Api",
+    },
+    projectId: "1",
+    project: {
+      id: "1",
+      name: "Simple HR",
+    },
+  },
+  {
+    staffId: "00009",
+    staffName: "Kyaw Zin Lin",
+    date: new Date("2024-07-06T00:00:00"),
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "Complete",
@@ -131,32 +156,7 @@ export const tasks: ITask[] = [
     },
   },
   {
-    staffId: "00003",
-    staffName: "Kyaw Zin Lin",
-    date: new Date("2024-08-06T00:00:00"),
-    fromTime: "9:00 AM",
-    toTime: "12:00 AM",
-    status: "Complete",
-    remark:
-      "Lorem ipsum dolor sit amet consectetur adipisinsequuntur ea voluptatem rerum ad. ",
-    taskId: "1",
-    task: {
-      id: "1",
-      name: "Development",
-    },
-    subTaskId: "1",
-    subTask: {
-      id: "1",
-      name: "Api",
-    },
-    projectId: "1",
-    project: {
-      id: "1",
-      name: "Smarter HR",
-    },
-  },
-  {
-    staffId: "00003",
+    staffId: "00009",
     staffName: "Htet Lin",
     date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
@@ -181,7 +181,7 @@ export const tasks: ITask[] = [
     },
   },
   {
-    staffId: "00003",
+    staffId: "00004",
     staffName: "Kyaw Zin Lin",
     date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
@@ -202,7 +202,7 @@ export const tasks: ITask[] = [
     projectId: "1",
     project: {
       id: "1",
-      name: "Smarter HR",
+      name: "App HR",
     },
   },
   {
@@ -227,7 +227,7 @@ export const tasks: ITask[] = [
     projectId: "1",
     project: {
       id: "1",
-      name: "Smarter HR",
+      name: "Simple HR",
     },
   },
   {

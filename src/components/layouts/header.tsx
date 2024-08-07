@@ -33,7 +33,7 @@ const Header = () => {
               to="/all-tasks"
               className={({ isActive }) => (isActive ? "text-amber-400" : "")}
             >
-              All Tasks
+              Employee Tasks
             </NavLink>
           </Button>
         </div>
