@@ -34,12 +34,12 @@ const DatePicker = ({
             className,
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? (
             format(date, dateFormat)
           ) : (
             <span>{placeholder || "Pick a date"}</span>
           )}
+          <CalendarIcon className="ml-auto h-4 w-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">

@@ -11,6 +11,8 @@ const AllTasksPage = () => {
         </div>
         <AllTasksTable />
       </div>
+
+      <AllTasksTable />
     </div>
   );
 };

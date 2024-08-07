@@ -1,4 +1,10 @@
-export type ITask = {
+export interface IResponse<TData> {
+  success: boolean;
+  message: string;
+  data: TData;
+}
+
+export interface ITask {
   staffId: string;
   date: Date;
   staffName: string;
@@ -21,4 +27,13 @@ export type ITask = {
     id: string;
     name: string;
   };
-};
+}
+
+export interface IProjectListResponse
+  extends IResponse<{ id: string; name: string }[]> {}
+
+export interface ITaskListResponse
+  extends IResponse<{ id: string; name: string }[]> {}
+
+export interface ISubTaskListResponse
+  extends IResponse<{ id: string; name: string }> {}
