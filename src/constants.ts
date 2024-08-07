@@ -4,7 +4,7 @@ export const tasks: ITask[] = [
   {
     staffId: "00003",
     staffName: "Kyaw Zin Lin",
-    date: "02-08-2024",
+    date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "In Progress",
@@ -29,7 +29,7 @@ export const tasks: ITask[] = [
   {
     staffId: "00003",
     staffName: "Kyaw Zin Lin",
-    date: "02-08-2024",
+    date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "In Progress",
@@ -54,7 +54,7 @@ export const tasks: ITask[] = [
   {
     staffId: "00003",
     staffName: "Kyaw Zin Lin",
-    date: "02-08-2024",
+    date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "In Progress",
@@ -79,7 +79,7 @@ export const tasks: ITask[] = [
   {
     staffId: "00003",
     staffName: "Kyaw Zin Lin",
-    date: "02-08-2024",
+    date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "In Progress",
@@ -104,7 +104,7 @@ export const tasks: ITask[] = [
   {
     staffId: "00003",
     staffName: "Kyaw Zin Lin",
-    date: "02-08-2024",
+    date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "Complete",
@@ -129,7 +129,7 @@ export const tasks: ITask[] = [
   {
     staffId: "00003",
     staffName: "Kyaw Zin Lin",
-    date: "02-08-2024",
+    date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "Complete",
@@ -154,7 +154,7 @@ export const tasks: ITask[] = [
   {
     staffId: "00003",
     staffName: "Htet Lin",
-    date: "02-08-2024",
+    date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "In Progress",
@@ -179,7 +179,7 @@ export const tasks: ITask[] = [
   {
     staffId: "00003",
     staffName: "Kyaw Zin Lin",
-    date: "02-08-2024",
+    date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "In Progress",
@@ -204,7 +204,7 @@ export const tasks: ITask[] = [
   {
     staffId: "00003",
     staffName: "Hein Htut Aung",
-    date: "02-08-2024",
+    date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "In Progress",
@@ -229,7 +229,7 @@ export const tasks: ITask[] = [
   {
     staffId: "00003",
     staffName: "Kyaw Zin Lin",
-    date: "02-08-2024",
+    date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "In Progress",
@@ -254,7 +254,7 @@ export const tasks: ITask[] = [
   {
     staffId: "00003",
     staffName: "Kyaw Zin Lin",
-    date: "02-08-2024",
+    date: new Date("2024-08-06T00:00:00"),
     fromTime: "9:00 AM",
     toTime: "12:00 AM",
     status: "Pending",

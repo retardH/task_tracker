@@ -14,7 +14,12 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./select";
 import { SelectValue } from "@radix-ui/react-select";
 import { Button } from "./button";
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DoubleArrowLeftIcon,
+  DoubleArrowRightIcon,
+} from "@radix-ui/react-icons";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -33,7 +38,7 @@ const DataTable = <TData, TValue>({
 
   return (
     <>
-      <div className="rounded-md overflow-hidden border">
+      <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -43,12 +48,15 @@ const DataTable = <TData, TValue>({
               >
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead className="py-4 text-center text-white" key={header.id}>
+                    <TableHead
+                      className="py-4 text-center text-white"
+                      key={header.id}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -67,7 +75,7 @@ const DataTable = <TData, TValue>({
                     <TableCell key={cell.id} className="text-center">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -86,7 +94,7 @@ const DataTable = <TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between mt-4">
+      <div className="mt-4 flex items-center justify-between">
         <div className="flex items-center">
           <span className="text-sm">Rows per page :&nbsp;&nbsp;</span>
           <Select
@@ -108,10 +116,20 @@ const DataTable = <TData, TValue>({
           </Select>
         </div>
         <div className="flex items-center gap-6">
-          <span className="text-sm ">
-            {`${currentStartRange}-${currentEndRange}`} of {rowCount} items
+          <span className="text-sm">
+            {table.getRowCount() === 0
+              ? "0 item"
+              : `${currentStartRange}-${currentEndRange} of ${rowCount} items`}
           </span>
           <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              disabled={!table.getCanPreviousPage()}
+              onClick={() => table.firstPage()}
+            >
+              <DoubleArrowLeftIcon />
+            </Button>
             <Button
               variant="outline"
               size="icon"
@@ -129,6 +147,14 @@ const DataTable = <TData, TValue>({
               onClick={() => table.nextPage()}
             >
               <ChevronRightIcon />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              disabled={!table.getCanNextPage()}
+              onClick={() => table.lastPage()}
+            >
+              <DoubleArrowRightIcon />
             </Button>
           </div>
         </div>

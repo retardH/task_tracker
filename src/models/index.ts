@@ -1,6 +1,6 @@
 export type ITask = {
   staffId: string;
-  date: string;
+  date: Date;
   staffName: string;
   fromTime: string;
   toTime: string;

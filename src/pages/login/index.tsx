@@ -1,6 +1,6 @@
 import logo from "@/assets/logo.svg";
-import red from "@/assets/Red Mottif.svg"
-import blue from "@/assets/Blue Mottif.svg"
+import red from "@/assets/Red Mottif.svg";
+import blue from "@/assets/Blue Mottif.svg";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,12 +18,16 @@ import { z } from "zod";
 import { useState } from "react";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 const formSchema = z.object({
-  staffId: z.string({
-    required_error: "Staff ID is require",
-  }),
-  password: z.string({
-    required_error: "Password is require",
-  }).min(8),
+  staffId: z
+    .string({
+      required_error: "Staff ID is require",
+    })
+    .min(8, "Id must contain at least 8 characters"),
+  password: z
+    .string({
+      required_error: "Password is require",
+    })
+    .min(8, "Password must contain at least 8 characters"),
 });
 
 const LoginPage = () => {
@@ -31,8 +35,8 @@ const LoginPage = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       staffId: "",
-      password:""
-    }
+      password: "",
+    },
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -41,22 +45,25 @@ const LoginPage = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log(data);
   };
+
   return (
-    <main className="w-full h-[100dvh] flex items-center justify-center ">
-      <img src= {red} alt=""  className="absolute top-0 left-0 w-[200px]"/>
-      <img src= {blue} alt=""  className="absolute bottom-0 right-0 w-[200px]"/>
-      <section className="w-[500px] h-[400px] bg-zinc-100 shadow-sm rounded-md p-4 ">
-        {/* <h2 className="text-zinc-950">Login to Continue</h2> */}
+    <main className="flex h-[100dvh] w-full items-center justify-center">
+      <img src={red} alt="" className="absolute left-0 top-0 w-[200px]" />
+      <img src={blue} alt="" className="absolute bottom-0 right-0 w-[200px]" />
+      <section className="w-[500px] rounded-md border border-primary/80 px-6 py-12 shadow-md">
         <div className="flex w-full items-center justify-center gap-3">
-          <img src={logo} alt="" className="rounded-sm w-[50px]" />
+          <img src={logo} alt="" className="w-[50px] rounded-sm" />
           <h2 className="text-4xl font-bold text-primary">Smart Task Master</h2>
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="mt-8 space-y-6"
+          >
             <FormField
               control={form.control}
               name="staffId"
@@ -65,7 +72,13 @@ const LoginPage = () => {
                   <FormItem className="col-span-2">
                     <FormLabel>Staff Id</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="" />
+                      <Input
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(e.target.value.replace(/[^\d]/g, ""))
+                        }
+                        placeholder="Type your ID"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -81,24 +94,29 @@ const LoginPage = () => {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Input {...field} type={showPassword ? 'text' : 'password'} placeholder="" />
-                        <button type="button" onClick={togglePasswordVisibility}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                        <Input
+                          {...field}
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Type your password"
+                        />
+                        <button
+                          type="button"
+                          onClick={togglePasswordVisibility}
+                          className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5"
                         >
-                          {showPassword? <EyeClosedIcon/> :<EyeOpenIcon/>}
+                          {showPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
                         </button>
                       </div>
-                    </FormControl> 
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 );
               }}
             />
-            <Button type="submit" className="mt-6 w-full">
-            Continue
-          </Button>
+            <Button type="submit" className="w-full">
+              Login to continue
+            </Button>
           </form>
-          
         </Form>
       </section>
     </main>
