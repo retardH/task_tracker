@@ -5,6 +5,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { ExitIcon } from "@radix-ui/react-icons";
@@ -13,11 +14,13 @@ import { Button } from "../ui/button";
 
 const Header = () => {
   return (
-    <header className="flex py-4 px-8 items-center border-b border-b-input shadow-sm justify-between bg-primary">
+    <header className="flex items-center justify-between border-b border-b-input bg-primary px-8 py-4 shadow-sm">
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
           <img src={logo} width={30} className="rounded-md" />
-          <h2 className="text-primary font-bold text-2xl text-white">Smart Task Master</h2>
+          <h2 className="text-2xl font-bold text-primary text-white">
+            Smart Task Tracker
+          </h2>
         </div>
         <div className="flex items-start gap-4">
           <Button variant="link" size="default" className="px-0 text-white">
@@ -40,21 +43,18 @@ const Header = () => {
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="flex items-center gap-2">
-            <div className="flex flex-col items-center gap-1">
-              <h4 className="text-sm font-medium text-white">Htet Zarni</h4>
-              <p className="text-xs font-medium text-foreground text-white">HRIS Team</p>
-            </div>
-            <Avatar>
-              <AvatarImage
-                src="https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"
-                alt="@shadcn"
-              />
-              <AvatarFallback>H</AvatarFallback>
-            </Avatar>
-          </div>
+          <Avatar>
+            <AvatarImage
+              src="https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"
+              alt="@shadcn"
+            />
+            <AvatarFallback>H</AvatarFallback>
+          </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent className="px-2" align="start">
+          <h4 className="text-sm font-semibold">Htet Zarni</h4>
+          <h6 className="text-xs text-muted-foreground">027366</h6>
+          <DropdownMenuSeparator />
           <DropdownMenuItem className="justify-center gap-2">
             <ExitIcon />
             <span>Logout</span>

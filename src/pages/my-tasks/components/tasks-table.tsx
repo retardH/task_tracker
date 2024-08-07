@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import DataTable from "@/components/ui/data-table";
-import { ITask } from "@/models";
+import type { ITask } from "@/models";
 import {
   type ColumnDef,
   ColumnFiltersState,
@@ -12,20 +12,19 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import {
-  CheckCircledIcon,
-  LapTimerIcon,
   MixerVerticalIcon,
   Pencil1Icon,
   TrashIcon,
 } from "@radix-ui/react-icons";
-import React, { useState } from "react";
-import { tasks } from "@/constants";
+import { useState } from "react";
+import { statusWithIconMapping, tasks } from "@/constants";
 import { format } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -37,11 +36,12 @@ import {
 } from "@/components/ui/dialog";
 import PersonalTaskForm from "@/components/form/task-form";
 import DatePicker from "@/components/ui/date-picker";
-
-const statusIconMapping: Record<string, React.ReactNode> = {
-  "In Progress": <LapTimerIcon className="h-4 w-4" />,
-  Complete: <CheckCircledIcon className="h-4 w-4" />,
-};
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const TasksTable = () => {
   const columns: ColumnDef<ITask>[] = [
@@ -70,7 +70,7 @@ const TasksTable = () => {
       header: "Date",
       cell: ({ row }) => {
         return (
-          <div className="min-w-[150px]">
+          <div className="min-w-[120px]">
             {format(row.original.date, "dd MMMM, yyyy")}
           </div>
         );
@@ -111,21 +111,21 @@ const TasksTable = () => {
       accessorKey: "project",
       header: "Project",
       cell: ({ row }) => {
-        return <div className="min-w-[120px]">{row.original.project.name}</div>;
+        return <div className="min-w-[100px]">{row.original.project.name}</div>;
       },
     },
     {
       accessorKey: "task",
       header: "Task",
       cell: ({ row }) => {
-        return <div className="min-w-[120px]">{row.original.task.name}</div>;
+        return <div className="min-w-[110px]">{row.original.task.name}</div>;
       },
     },
     {
       accessorKey: "subTask",
       header: "Sub-task",
       cell: ({ row }) => {
-        return <div className="min-w-[120px]">{row.original.subTask.name}</div>;
+        return <div className="min-w-[110px]">{row.original.subTask.name}</div>;
       },
     },
     {
@@ -134,8 +134,8 @@ const TasksTable = () => {
       cell: ({ row }) => {
         const status = row.original.status;
         return (
-          <div className="flex min-w-[150px] items-center justify-center gap-2">
-            {statusIconMapping[status]}
+          <div className="flex min-w-[150px] items-center justify-start gap-2">
+            {statusWithIconMapping[status]}
             {status}
           </div>
         );
@@ -155,13 +155,27 @@ const TasksTable = () => {
       header: "",
       cell: () => {
         return (
-          <div className="flex min-w-[80px] justify-end">
-            <Button size={"icon"} variant={"ghost"}>
-              <Pencil1Icon />
-            </Button>
-            <Button size={"icon"} variant={"ghost"}>
-              <TrashIcon />
-            </Button>
+          <div className="flex min-w-[80px] justify-end gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button size={"icon"} variant={"outline"}>
+                    <Pencil1Icon />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Edit Record</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button size={"icon"} variant={"destructive"}>
+                    <TrashIcon />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Delete Record</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         );
       },
@@ -196,11 +210,11 @@ const TasksTable = () => {
 
   return (
     <>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-2 flex items-center justify-between">
         <div>
           <DatePicker
-            className="w-[200px]"
-            placeholder="Filter by date"
+            className="w-[240px]"
+            placeholder="Filter by date..."
             date={
               table.getColumn("date")?.getFilterValue()
                 ? new Date(table.getColumn("date")?.getFilterValue() as string)
@@ -237,6 +251,7 @@ const TasksTable = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Toggle Columns</DropdownMenuLabel>
+              <DropdownMenuSeparator />
               {table
                 .getAllColumns()
                 .filter((column) => column.getCanHide())
