@@ -361,10 +361,10 @@ export const dummyComplexityList = [
   },
 ];
 export const dummystatusList = [
-  { id: 1, name: "Pending" },
-  { id: 2, name: "Planned" },
-  { id: 3, name: "In Progress" },
-  { id: 4, name: "Complete" },
+  // { id: 1, name: "Pending" },
+  // { id: 2, name: "Planned" },
+  { id: 1, name: "In Progress" },
+  { id: 2, name: "Complete" },
 ];
 
 export const statusWithIconMapping: Record<string, ReactNode> = {

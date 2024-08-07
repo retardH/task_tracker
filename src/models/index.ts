@@ -36,4 +36,20 @@ export interface ITaskListResponse
   extends IResponse<{ id: string; name: string }[]> {}
 
 export interface ISubTaskListResponse
-  extends IResponse<{ id: string; name: string }> {}
+  extends IResponse<
+    { subTaskId: string; mainTaskId: string; name: string }[]
+  > {}
+
+export interface IPersonalTaskCreatePayload {
+  staffId: string;
+  staffName: string;
+  date: string;
+  fromTime: string;
+  toTime: string;
+  taskId: string;
+  subTaskId: string;
+  status: number;
+  projectId: string;
+  remark: string;
+  otherSubTask: string;
+}
