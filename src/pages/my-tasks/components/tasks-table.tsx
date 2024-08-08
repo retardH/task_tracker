@@ -16,7 +16,7 @@ import {
   Pencil1Icon,
   TrashIcon,
 } from "@radix-ui/react-icons";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { statusWithIconMapping } from "@/constants";
 import { format } from "date-fns";
 import {
@@ -36,12 +36,6 @@ import {
 } from "@/components/ui/dialog";
 import PersonalTaskForm from "@/components/form/task-form";
 import DatePicker from "@/components/ui/date-picker";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
 import { getAuthInfo } from "@/lib/utils";
 import {

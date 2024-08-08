@@ -226,10 +226,10 @@ const AllTasksTable = () => {
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex gap-4">
+      <div className="mb-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div className="flex w-full flex-col gap-4 md:w-auto md:flex-row">
           <Input
-            className="w-[200px]"
+            className="w-full md:w-[200px]"
             name="staffId"
             placeholder="Filter by Staff Id..."
             value={staffIdFilterVal}
@@ -240,7 +240,7 @@ const AllTasksTable = () => {
             }}
           />
           <DatePicker
-            className="w-[200px]"
+            className="w-full md:w-[200px]"
             placeholder="Filter by date..."
             date={dateFilterVal ? new Date(dateFilterVal) : undefined}
             onDateChange={(date) => {
@@ -255,7 +255,7 @@ const AllTasksTable = () => {
           >
             <SelectTrigger
               className={cn(
-                "w-[200px]",
+                "w-full md:w-[200px]",
                 projectIdFilterVal === "" && "text-muted-foreground",
               )}
             >
@@ -276,7 +276,7 @@ const AllTasksTable = () => {
           {table.getState().columnFilters.length > 0 && (
             <Button
               variant="ghost"
-              className="inline-flex items-center gap-2"
+              className="hidden items-center gap-2 md:inline-flex"
               onClick={() => {
                 table.resetColumnFilters();
               }}
@@ -285,7 +285,18 @@ const AllTasksTable = () => {
             </Button>
           )}
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex w-full items-center justify-between gap-4 md:w-auto">
+          {table.getState().columnFilters.length > 0 && (
+            <Button
+              variant="ghost"
+              className="inline-flex items-center gap-2 md:hidden"
+              onClick={() => {
+                table.resetColumnFilters();
+              }}
+            >
+              <span>Reset</span>
+            </Button>
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
