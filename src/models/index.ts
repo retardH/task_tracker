@@ -19,7 +19,8 @@ export interface ITask {
   };
   subTaskId: string;
   subTask: {
-    id: string;
+    mainTaskId: string;
+    subTaskId: string;
     name: string;
   };
   projectId: string;
@@ -52,4 +53,9 @@ export interface IPersonalTaskCreatePayload {
   projectId: string;
   remark: string;
   otherSubTask: string;
+}
+
+export interface ILoginpayload {
+  id: string;
+  password: string;
 }

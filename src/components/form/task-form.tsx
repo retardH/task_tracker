@@ -10,7 +10,6 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Button } from "../ui/button";
 import DatePicker from "../ui/date-picker";
 import {
   Select,
@@ -32,28 +31,26 @@ import {
   useGetSubTaskTypes,
   useGetTaskTypes,
 } from "@/services/setup";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { IPersonalTaskCreatePayload } from "@/models";
 import { fetcher } from "@/lib/fetcher";
+import { getAuthInfo } from "@/lib/utils";
+import SubmitButton from "../ui/submit-button";
 
 const formSchema = z.object({
-  staffId: z
-    .string({
-      required_error: "Staff id is required",
-    })
-    .min(6, "Staff id must contain at least 6 characters"),
-  staffName: z.string({
-    required_error: "Staff name is required",
-  }),
   date: z.date({
     required_error: "Date is required",
   }),
-  fromTime: z.string({
-    required_error: "From time is required",
-  }),
-  toTime: z.string({
-    required_error: "To time is required",
-  }),
+  fromTime: z
+    .string({
+      required_error: "From time is required",
+    })
+    .min(2, "From time is required"),
+  toTime: z
+    .string({
+      required_error: "To time is required",
+    })
+    .min(2, "To time is required"),
   remark: z.string().optional(),
   task: z.string({
     required_error: "Task is required",
@@ -81,16 +78,14 @@ const PersonalTaskForm = ({ isEditMode = false }: PersonalTaskFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      staffId: "",
-      staffName: "",
       date: undefined,
       fromTime: "",
       toTime: "",
-      project: "",
-      status: "",
       remark: "",
     },
   });
+
+  const { userInfo } = getAuthInfo();
 
   const { data: projectsResp } = useGetProjects();
   const projectList = projectsResp?.data ?? [];
@@ -118,8 +113,8 @@ const PersonalTaskForm = ({ isEditMode = false }: PersonalTaskFormProps) => {
     console.log(data);
     if (!isEditMode) {
       createPersonalTask.mutate({
-        staffId: data.staffId,
-        staffName: data.staffName,
+        staffId: userInfo?.staffId ?? "",
+        staffName: userInfo?.name ?? "",
         date: data.date.toISOString(),
         fromTime: data.fromTime,
         toTime: data.toTime,
@@ -137,7 +132,11 @@ const PersonalTaskForm = ({ isEditMode = false }: PersonalTaskFormProps) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid grid-cols-2 gap-4">
-          <FormField
+          <div className="col-span-2">
+            <h4 className="font-medium">{userInfo?.name}</h4>
+            <h4 className="text-sm">{userInfo?.staffId}</h4>
+          </div>
+          {/* <FormField
             control={form.control}
             name="staffId"
             render={({ field }) => {
@@ -166,7 +165,7 @@ const PersonalTaskForm = ({ isEditMode = false }: PersonalTaskFormProps) => {
                 </FormItem>
               );
             }}
-          />
+          /> */}
           <FormField
             control={form.control}
             name="date"
@@ -372,9 +371,12 @@ const PersonalTaskForm = ({ isEditMode = false }: PersonalTaskFormProps) => {
           />
         </div>
         <div className="flex w-full justify-end">
-          <Button type="submit" size="lg" className="ml-auto mt-6">
+          <SubmitButton
+            loading={createPersonalTask.isPending}
+            className="ml-auto mt-6"
+          >
             Submit
-          </Button>
+          </SubmitButton>
         </div>
       </form>
     </Form>

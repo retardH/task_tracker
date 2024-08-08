@@ -1,7 +1,6 @@
 import logo from "@/assets/logo.svg";
 import red from "@/assets/Red Mottif.svg";
 import blue from "@/assets/Blue Mottif.svg";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,18 +15,20 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useState } from "react";
-import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
+import {
+  ExclamationTriangleIcon,
+  EyeClosedIcon,
+  EyeOpenIcon,
+} from "@radix-ui/react-icons";
+import { useLogin } from "@/services/auth";
+import { useNavigate } from "react-router";
+import { storeAuthInfo } from "@/lib/utils";
+import SubmitButton from "@/components/ui/submit-button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 const formSchema = z.object({
-  staffId: z
-    .string({
-      required_error: "Staff ID is require",
-    })
-    .min(8, "Id must contain at least 8 characters"),
-  password: z
-    .string({
-      required_error: "Password is require",
-    })
-    .min(8, "Password must contain at least 8 characters"),
+  staffId: z.string().min(6, "Id must contain at least 8 characters"),
+  password: z.string().min(8, "Password must contain at least 8 characters"),
 });
 
 const LoginPage = () => {
@@ -39,6 +40,9 @@ const LoginPage = () => {
     },
   });
 
+  const login = useLogin();
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -46,7 +50,25 @@ const LoginPage = () => {
   };
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    login.mutate(
+      {
+        id: data.staffId,
+        password: data.password,
+      },
+      {
+        onSuccess: (data) => {
+          storeAuthInfo({
+            staffId: data?.data.staffId ?? "",
+            name: data?.data.name ?? "",
+            token: data?.data.accessToken ?? "",
+          });
+          navigate("/");
+        },
+        onError: (err) => {
+          console.error(err);
+        },
+      },
+    );
   };
 
   return (
@@ -54,16 +76,19 @@ const LoginPage = () => {
       <img src={red} alt="" className="absolute left-0 top-0 w-[200px]" />
       <img src={blue} alt="" className="absolute bottom-0 right-0 w-[200px]" />
       <section className="w-[500px] rounded-md border border-primary/80 px-6 py-12 shadow-md">
-        <div className="flex w-full items-center justify-center gap-3">
+        <div className="mb-8 flex w-full items-center justify-center gap-3">
           <img src={logo} alt="" className="w-[50px] rounded-sm" />
           <h2 className="text-4xl font-bold text-primary">Smart Task Master</h2>
         </div>
-
+        {login.isError && (
+          <Alert variant="destructive" className="mb-4">
+            <ExclamationTriangleIcon />
+            <AlertTitle>Invalid credentials!</AlertTitle>
+            <AlertDescription>Please try again</AlertDescription>
+          </Alert>
+        )}
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="mt-8 space-y-6"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="staffId"
@@ -113,9 +138,9 @@ const LoginPage = () => {
                 );
               }}
             />
-            <Button type="submit" className="w-full">
+            <SubmitButton loading={login.isPending} className="w-full">
               Login to continue
-            </Button>
+            </SubmitButton>
           </form>
         </Form>
       </section>

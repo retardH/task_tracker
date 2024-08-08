@@ -4,7 +4,7 @@ import type {
   ISubTaskListResponse,
   ITaskListResponse,
 } from "@/models";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export const useGetProjects = () => {
   return useQuery<IProjectListResponse>({

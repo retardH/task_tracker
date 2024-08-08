@@ -42,6 +42,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
 
 const TasksTable = () => {
   const columns: ColumnDef<ITask>[] = [
@@ -158,7 +159,7 @@ const TasksTable = () => {
           <div className="flex min-w-[80px] justify-end gap-2">
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                   <Button size={"icon"} variant={"outline"}>
                     <Pencil1Icon />
                   </Button>
@@ -168,7 +169,7 @@ const TasksTable = () => {
             </TooltipProvider>
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                   <Button size={"icon"} variant={"destructive"}>
                     <TrashIcon />
                   </Button>
@@ -231,10 +232,11 @@ const TasksTable = () => {
               <DialogTrigger asChild>
                 <Button>Add New Task</Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent aria-describedby={undefined}>
                 <DialogHeader>
                   <DialogTitle>Create New Task Record</DialogTitle>
                 </DialogHeader>
+                <Separator />
                 <PersonalTaskForm />
               </DialogContent>
             </Dialog>

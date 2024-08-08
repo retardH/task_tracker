@@ -12,7 +12,7 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import { dummyPojectList, statusWithIconMapping, tasks } from "@/constants";
+import { statusWithIconMapping, tasks } from "@/constants";
 import { format } from "date-fns";
 import { MixerVerticalIcon } from "@radix-ui/react-icons";
 import DatePicker from "@/components/ui/date-picker";
@@ -33,6 +33,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useGetProjects } from "@/services/setup";
+import { cn } from "@/lib/utils";
 
 const AllTasksTable = () => {
   const columns: ColumnDef<ITask>[] = [
@@ -174,6 +176,9 @@ const AllTasksTable = () => {
     // },
   ];
 
+  const { data: projectsResp } = useGetProjects();
+  const projectsList = projectsResp?.data ?? [];
+
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -199,18 +204,23 @@ const AllTasksTable = () => {
     },
   });
 
+  const staffIdFilterVal =
+    (table.getColumn("staffId")?.getFilterValue() as string) ?? "";
+
+  const projectIdFilterVal =
+    (table.getColumn("project")?.getFilterValue() as string) ?? "";
+
+  const dateFilterVal = table.getColumn("date")?.getFilterValue() as string;
+
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        {/* <ComboboxDemo /> */}
         <div className="flex gap-4">
           <Input
             className="w-[200px]"
             name="staffId"
             placeholder="Filter by Staff Id..."
-            value={
-              (table.getColumn("staffId")?.getFilterValue() as string) ?? ""
-            }
+            value={staffIdFilterVal}
             onChange={(e) => {
               table
                 .getColumn("staffId")
@@ -220,65 +230,28 @@ const AllTasksTable = () => {
           <DatePicker
             className="w-[200px]"
             placeholder="Filter by date..."
-            date={
-              table.getColumn("date")?.getFilterValue()
-                ? new Date(table.getColumn("date")?.getFilterValue() as string)
-                : undefined
-            }
+            date={dateFilterVal ? new Date(dateFilterVal) : undefined}
             onDateChange={(date) => {
               table.getColumn("date")?.setFilterValue(date);
             }}
           />
-          {/* <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="inline-flex items-center gap-1"
-              >
-                <MixerVerticalIcon />
-                <span>
-                  {selectedProject ? (
-                    <span>{selectedProject}</span>
-                  ) : (
-                    "Filter by project"
-                  )}
-                </span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {tasks
-                .map((task) => task.project.name)
-                .filter((value, index, self) => self.indexOf(value) === index) // Unique projects
-                .map((project) => (
-                  <DropdownMenuItem
-                    key={project}
-                    onClick={() => {
-                      table.getColumn("project")?.setFilterValue(project);
-                      setSelectedProject(project);
-                    }}
-                  >
-                    {project}
-                  </DropdownMenuItem>
-                ))}
-            </DropdownMenuContent>
-          </DropdownMenu> */}
           <Select
-            value={
-              (table.getColumn("project")?.getFilterValue() as string) ?? ""
-            }
+            value={projectIdFilterVal}
             onValueChange={(val) => {
               table.getColumn("project")?.setFilterValue(val);
             }}
           >
-            <SelectTrigger className="w-[200px] text-muted-foreground">
-              <SelectValue
-                placeholder="Filter by Project..."
-                className="w-[200px] text-muted-foreground"
-              />
+            <SelectTrigger
+              className={cn(
+                "w-[200px]",
+                projectIdFilterVal === "" && "text-muted-foreground",
+              )}
+            >
+              <SelectValue placeholder="Filter by Project..." />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                {dummyPojectList.map((p) => {
+                {projectsList.map((p) => {
                   return (
                     <SelectItem key={p.id} value={`${p.id}`}>
                       {p.name}

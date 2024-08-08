@@ -21,7 +21,7 @@ export const tasks: ITask[] = [
     },
     subTaskId: "1",
     subTask: {
-      id: "1",
+      subTaskId: "1",
       name: "Api",
     },
     projectId: "1",
