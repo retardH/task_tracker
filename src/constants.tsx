@@ -126,7 +126,7 @@ export const tasks: ITask[] = [
     },
     projectId: "1",
     project: {
-      id: "1",
+      id: "2",
       name: "Simple HR",
     },
   },
@@ -201,7 +201,7 @@ export const tasks: ITask[] = [
     },
     projectId: "1",
     project: {
-      id: "1",
+      id: "4",
       name: "App HR",
     },
   },
@@ -226,7 +226,7 @@ export const tasks: ITask[] = [
     },
     projectId: "1",
     project: {
-      id: "1",
+      id: "4",
       name: "Simple HR",
     },
   },
@@ -330,7 +330,7 @@ export const dummyPojectList = [
   },
   {
     id: 2,
-    name: "Smart HR",
+    name: "Simple HR",
   },
   {
     id: 3,
@@ -338,7 +338,7 @@ export const dummyPojectList = [
   },
   {
     id: 4,
-    name: "Insurance",
+    name: "App HR",
   },
   {
     id: 5,
@@ -361,10 +361,10 @@ export const dummyComplexityList = [
   },
 ];
 export const dummystatusList = [
-  { id: 1, name: "Pending" },
-  { id: 2, name: "Planned" },
-  { id: 3, name: "In Progress" },
-  { id: 4, name: "Complete" },
+  // { id: 1, name: "Pending" },
+  // { id: 2, name: "Planned" },
+  { id: 1, name: "In Progress" },
+  { id: 2, name: "Complete" },
 ];
 
 export const statusWithIconMapping: Record<string, ReactNode> = {

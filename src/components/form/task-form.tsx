@@ -19,15 +19,22 @@ import {
   SelectContent,
   SelectValue,
   SelectItem,
+  SelectLabel,
 } from "../ui/select";
 
 import {
-  dummySubTaskTypesList,
   // dummyComplexityList,
   dummystatusList,
 } from "@/constants";
 import { Textarea } from "../ui/textarea";
-import { useGetProjects, useGetTaskTypes } from "@/services/setup";
+import {
+  useGetProjects,
+  useGetSubTaskTypes,
+  useGetTaskTypes,
+} from "@/services/setup";
+import { useMutation } from "react-query";
+import { IPersonalTaskCreatePayload } from "@/models";
+import { fetcher } from "@/lib/fetcher";
 
 const formSchema = z.object({
   staffId: z
@@ -48,8 +55,6 @@ const formSchema = z.object({
     required_error: "To time is required",
   }),
   remark: z.string().optional(),
-  // status: z.enum(["Pending", "Planned", "InProgress", "Complete"], {
-
   task: z.string({
     required_error: "Task is required",
   }),
@@ -67,7 +72,12 @@ const formSchema = z.object({
   // }),
 });
 
-const PersonalTaskForm = () => {
+interface PersonalTaskFormProps {
+  isEditMode?: boolean;
+  defaultData?: z.infer<typeof formSchema>;
+}
+
+const PersonalTaskForm = ({ isEditMode = false }: PersonalTaskFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -88,8 +98,39 @@ const PersonalTaskForm = () => {
   const { data: taskTypesResp } = useGetTaskTypes();
   const taskTypesList = taskTypesResp?.data ?? [];
 
+  const taskTypeId = form.watch("task");
+  const { data: subTaskTypesResp } = useGetSubTaskTypes(taskTypeId);
+  const subTaskTypesList = subTaskTypesResp?.data ?? [];
+
+  const createPersonalTask = useMutation({
+    mutationFn: async (payload: IPersonalTaskCreatePayload) => {
+      return await fetcher("post", "/PersonalTask", payload);
+    },
+    onSuccess: () => {
+      console.info("Success!");
+    },
+    onError: (err) => {
+      console.error(err);
+    },
+  });
+
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log(data);
+    if (!isEditMode) {
+      createPersonalTask.mutate({
+        staffId: data.staffId,
+        staffName: data.staffName,
+        date: data.date.toISOString(),
+        fromTime: data.fromTime,
+        toTime: data.toTime,
+        projectId: data.project,
+        taskId: data.task,
+        subTaskId: data.subTask,
+        status: +data.status,
+        remark: data.remark ?? "",
+        otherSubTask: "",
+      });
+    }
   };
 
   return (
@@ -226,14 +267,18 @@ const PersonalTaskForm = () => {
                       <SelectContent>
                         <SelectGroup>
                           {/* <SelectLabel>Project</SelectLabel> */}
-                          {dummySubTaskTypesList.map((subTask) => (
-                            <SelectItem
-                              key={subTask.id}
-                              value={`${subTask.id}`}
-                            >
-                              {subTask.name}
-                            </SelectItem>
-                          ))}
+                          {subTaskTypesList.length ? (
+                            subTaskTypesList.map((subTask) => (
+                              <SelectItem
+                                key={subTask.subTaskId}
+                                value={`${subTask.subTaskId}`}
+                              >
+                                {subTask.name}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectLabel>No Option</SelectLabel>
+                          )}
                         </SelectGroup>
                       </SelectContent>
                     </Select>

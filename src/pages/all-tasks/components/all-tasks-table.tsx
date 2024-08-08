@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import DataTable from "@/components/ui/data-table";
-import { ITask } from "@/models";
+import type { ITask } from "@/models";
 import {
   type ColumnDef,
   ColumnFiltersState,
@@ -10,26 +10,29 @@ import {
   type PaginationState,
   useReactTable,
   type VisibilityState,
-
 } from "@tanstack/react-table";
 import { useState } from "react";
-import { tasks } from "@/constants";
+import { dummyPojectList, statusWithIconMapping, tasks } from "@/constants";
 import { format } from "date-fns";
-import { CheckCircledIcon, LapTimerIcon, MixerVerticalIcon } from "@radix-ui/react-icons";
+import { MixerVerticalIcon } from "@radix-ui/react-icons";
 import DatePicker from "@/components/ui/date-picker";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-const statusIconMapping: Record<string, React.ReactNode> = {
-  "In Progress": <LapTimerIcon className="h-4 w-4" />,
-  Complete: <CheckCircledIcon className="h-4 w-4" />,
-};
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const AllTasksTable = () => {
   const columns: ColumnDef<ITask>[] = [
@@ -54,9 +57,7 @@ const AllTasksTable = () => {
       },
       cell: ({ row }) => {
         return (
-          <div className="font-medium min-w-[100px]">
-            {row.original.staffId}
-          </div>
+          <div className="min-w-[90px] font-medium">{row.original.staffId}</div>
         );
       },
     },
@@ -72,7 +73,7 @@ const AllTasksTable = () => {
       header: "Date",
       cell: ({ row }) => {
         return (
-          <div className="min-w-[150px]">
+          <div className="min-w-[140px]">
             {format(row.original.date, "dd MMMM, yyyy")}
           </div>
         );
@@ -113,24 +114,24 @@ const AllTasksTable = () => {
       accessorKey: "project",
       header: "Project",
       cell: ({ row }) => {
-        return <div className="min-w-[120px]">{row.original.project.name}</div>;
+        return <div className="min-w-[100px]">{row.original.project.name}</div>;
       },
       filterFn: (row, _, filterValue) => {
-        return row.original.project.name === filterValue;
+        return row.original.project.id === filterValue;
       },
     },
     {
       accessorKey: "task",
       header: "Task",
       cell: ({ row }) => {
-        return <div className="min-w-[120px]">{row.original.task.name}</div>;
+        return <div className="min-w-[110px]">{row.original.task.name}</div>;
       },
     },
     {
       accessorKey: "subTask",
       header: "Sub-task",
       cell: ({ row }) => {
-        return <div className="min-w-[120px]">{row.original.subTask.name}</div>;
+        return <div className="min-w-[110px]">{row.original.subTask.name}</div>;
       },
     },
     {
@@ -139,8 +140,8 @@ const AllTasksTable = () => {
       cell: ({ row }) => {
         const status = row.original.status;
         return (
-          <div className="flex min-w-[150px] items-center justify-center gap-2">
-            {statusIconMapping[status]}
+          <div className="flex min-w-[150px] items-center justify-start gap-2">
+            {statusWithIconMapping[status]}
             {status}
           </div>
         );
@@ -182,9 +183,6 @@ const AllTasksTable = () => {
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  const [selectedProject, setSelectedProject] = useState<string | undefined>();
-
-
   const table = useReactTable({
     data: tasks,
     columns: columns,
@@ -193,7 +191,7 @@ const AllTasksTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     onPaginationChange: setPagination,
     onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange:setVisibilityState,
+    onColumnVisibilityChange: setVisibilityState,
     state: {
       pagination: pagination,
       columnVisibility: visibilityState,
@@ -203,9 +201,11 @@ const AllTasksTable = () => {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <div className="flex gap-2">
-        <Input className="w-[200px]"
+      <div className="mb-2 flex items-center justify-between">
+        {/* <ComboboxDemo /> */}
+        <div className="flex gap-4">
+          <Input
+            className="w-[200px]"
             name="staffId"
             placeholder="Filter by Staff Id..."
             value={
@@ -219,7 +219,7 @@ const AllTasksTable = () => {
           />
           <DatePicker
             className="w-[200px]"
-            placeholder="Filter by date"
+            placeholder="Filter by date..."
             date={
               table.getColumn("date")?.getFilterValue()
                 ? new Date(table.getColumn("date")?.getFilterValue() as string)
@@ -229,7 +229,7 @@ const AllTasksTable = () => {
               table.getColumn("date")?.setFilterValue(date);
             }}
           />
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
@@ -238,7 +238,7 @@ const AllTasksTable = () => {
                 <MixerVerticalIcon />
                 <span>
                   {selectedProject ? (
-                     <span>{selectedProject}</span>
+                    <span>{selectedProject}</span>
                   ) : (
                     "Filter by project"
                   )}
@@ -246,7 +246,6 @@ const AllTasksTable = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              {/* <DropdownMenuLabel>Filter by Project</DropdownMenuLabel> */}
               {tasks
                 .map((task) => task.project.name)
                 .filter((value, index, self) => self.indexOf(value) === index) // Unique projects
@@ -262,16 +261,40 @@ const AllTasksTable = () => {
                   </DropdownMenuItem>
                 ))}
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
+          <Select
+            value={
+              (table.getColumn("project")?.getFilterValue() as string) ?? ""
+            }
+            onValueChange={(val) => {
+              table.getColumn("project")?.setFilterValue(val);
+            }}
+          >
+            <SelectTrigger className="w-[200px] text-muted-foreground">
+              <SelectValue
+                placeholder="Filter by Project..."
+                className="w-[200px] text-muted-foreground"
+              />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {dummyPojectList.map((p) => {
+                  return (
+                    <SelectItem key={p.id} value={`${p.id}`}>
+                      {p.name}
+                    </SelectItem>
+                  );
+                })}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           {table.getState().columnFilters.length > 0 && (
             <Button
               variant="ghost"
               className="inline-flex items-center gap-2"
               onClick={() => {
                 table.resetColumnFilters();
-                setSelectedProject(undefined); // Reset selected project
-
-               }}
+              }}
             >
               <span>Reset</span>
             </Button>
@@ -290,6 +313,7 @@ const AllTasksTable = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Toggle Columns</DropdownMenuLabel>
+              <DropdownMenuSeparator />
               {table
                 .getAllColumns()
                 .filter((column) => column.getCanHide())
@@ -311,7 +335,7 @@ const AllTasksTable = () => {
       </div>
       <DataTable table={table} columns={columns} />
     </div>
-    );
+  );
 };
 
 export default AllTasksTable;

@@ -1,5 +1,9 @@
 import { fetcher } from "@/lib/fetcher";
-import { IProjectListResponse, ITaskListResponse } from "@/models";
+import type {
+  IProjectListResponse,
+  ISubTaskListResponse,
+  ITaskListResponse,
+} from "@/models";
 import { useQuery } from "react-query";
 
 export const useGetProjects = () => {
@@ -17,5 +21,15 @@ export const useGetTaskTypes = () => {
     queryFn: async () => {
       return await fetcher("get", "/Task");
     },
+  });
+};
+
+export const useGetSubTaskTypes = (taskTypeId: string) => {
+  return useQuery<ISubTaskListResponse>({
+    queryKey: ["/SubTask", taskTypeId],
+    queryFn: async () => {
+      return await fetcher("get", `/SubTask/${taskTypeId}`);
+    },
+    enabled: !!taskTypeId,
   });
 };

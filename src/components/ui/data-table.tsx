@@ -49,7 +49,7 @@ const DataTable = <TData, TValue>({
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
-                      className="py-4 text-center text-white"
+                      className="py-4 text-left text-white"
                       key={header.id}
                     >
                       {header.isPlaceholder
@@ -72,7 +72,7 @@ const DataTable = <TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-center">
+                    <TableCell key={cell.id} className="text-left">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),

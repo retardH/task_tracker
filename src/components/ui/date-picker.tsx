@@ -37,7 +37,9 @@ const DatePicker = ({
           {date ? (
             format(date, dateFormat)
           ) : (
-            <span>{placeholder || "Pick a date"}</span>
+            <span className="text-muted-foreground">
+              {placeholder || "Pick a date"}
+            </span>
           )}
           <CalendarIcon className="ml-auto h-4 w-4" />
         </Button>
