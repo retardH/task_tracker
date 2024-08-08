@@ -21,8 +21,12 @@ const onRequestErr = async (error: AxiosError): Promise<AxiosError> => {
 
 apiClient.interceptors.request.use(onRequest, onRequestErr);
 
-const fetcher = async <D>(method: "post" | "get", reqUrl: string, data?: D) => {
-  const token = localStorage.getItem("token");
+const fetcher = async <D>(
+  method: "post" | "get" | "put" | "delete" | "patch",
+  reqUrl: string,
+  data?: D,
+) => {
+  // const token = localStorage.getItem("token");
 
   const headers = {
     // Authorization: `Bearer ${token ?? ""}`,

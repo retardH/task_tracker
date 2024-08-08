@@ -16,8 +16,8 @@ import {
   Pencil1Icon,
   TrashIcon,
 } from "@radix-ui/react-icons";
-import { useState } from "react";
-import { statusWithIconMapping, tasks } from "@/constants";
+import { useEffect, useRef, useState } from "react";
+import { statusWithIconMapping } from "@/constants";
 import { format } from "date-fns";
 import {
   DropdownMenu,
@@ -43,8 +43,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
+import { getAuthInfo } from "@/lib/utils";
+import {
+  useDeleteTaskById,
+  useGetSingleTaskById,
+  useGetTasksByStaffId,
+} from "@/services/task";
+import { useQueryClient } from "@tanstack/react-query";
 
 const TasksTable = () => {
+  const queryClient = useQueryClient();
+
   const columns: ColumnDef<ITask>[] = [
     // {
     //   accessorKey: "staffId",
@@ -87,14 +96,14 @@ const TasksTable = () => {
     //   accessorKey: "fromTime",
     //   header: "From",
     //   cell: ({ row }) => {
-    //     return <div className="min-w-[120px]">{row.original.fromTime}</div>;
+    //     return <div className="min-w-[80px]">{row.original.fromTime}</div>;
     //   },
     // },
     // {
     //   accessorKey: "toTime",
     //   header: "To",
     //   cell: ({ row }) => {
-    //     return <div className="min-w-[120px]">{row.original.toTime}</div>;
+    //     return <div className="min-w-[80px]">{row.original.toTime}</div>;
     //   },
     // },
     {
@@ -102,7 +111,7 @@ const TasksTable = () => {
       header: "Duration",
       cell: ({ row }) => {
         return (
-          <div className="min-w-[150px]">
+          <div className="min-w-[120px]">
             {row.original.fromTime} - {row.original.toTime}
           </div>
         );
@@ -119,14 +128,16 @@ const TasksTable = () => {
       accessorKey: "task",
       header: "Task",
       cell: ({ row }) => {
-        return <div className="min-w-[110px]">{row.original.task.name}</div>;
+        return (
+          <div className="min-w-[110px]">{row.original.mainTask.name}</div>
+        );
       },
     },
     {
       accessorKey: "subTask",
       header: "Sub-task",
       cell: ({ row }) => {
-        return <div className="min-w-[110px]">{row.original.subTask.name}</div>;
+        return <div className="min-w-[120px]">{row.original.subTask.name}</div>;
       },
     },
     {
@@ -137,7 +148,7 @@ const TasksTable = () => {
         return (
           <div className="flex min-w-[150px] items-center justify-start gap-2">
             {statusWithIconMapping[status]}
-            {status}
+            {+status === 1 ? "In Progress" : "Complete"}
           </div>
         );
       },
@@ -147,43 +158,62 @@ const TasksTable = () => {
       header: "Remark",
       cell: ({ row }) => {
         return (
-          <div className="min-w-[300px] text-left">{row.original.remark}</div>
+          <div className="min-w-[240px] text-left">{row.original.remark}</div>
         );
       },
     },
     {
       id: "actions",
       header: "",
-      cell: () => {
+      cell: ({ row }) => {
         return (
-          <div className="flex min-w-[80px] justify-end gap-2">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button size={"icon"} variant={"outline"}>
-                    <Pencil1Icon />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Edit Record</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button size={"icon"} variant={"destructive"}>
-                    <TrashIcon />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Delete Record</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+          <div key={row.id} className="flex min-w-[80px] justify-end gap-2">
+            <Button
+              size={"icon"}
+              variant={"outline"}
+              onClick={() => {
+                setSelectedTaskId(row.original.id);
+                editDialogTriggerRef.current?.click();
+              }}
+            >
+              <Pencil1Icon />
+            </Button>
+            <Button
+              size={"icon"}
+              variant={"destructive"}
+              onClick={() => {
+                deletePersonalTask.mutate(row.original.id, {
+                  onSuccess: () => {
+                    queryClient.invalidateQueries({
+                      queryKey: ["tasks", userInfo?.accountId],
+                      exact: true,
+                    });
+                  },
+                });
+              }}
+            >
+              <TrashIcon />
+            </Button>
           </div>
         );
       },
     },
   ];
 
-  const [isOpenDialog, setIsOpenDialog] = useState<boolean>(false);
+  const editDialogTriggerRef = useRef<HTMLButtonElement>(null);
+  const { userInfo } = getAuthInfo();
+  const { data: personalTasksResp } = useGetTasksByStaffId(userInfo?.accountId);
+  const personalTasks = personalTasksResp?.data ?? [];
+
+  const deletePersonalTask = useDeleteTaskById();
+
+  const [selectedTaskId, setSelectedTaskId] = useState<string>("");
+
+  const { data: singleTaskResp } = useGetSingleTaskById(selectedTaskId);
+  const singleTaskDetail = singleTaskResp?.data;
+
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState<boolean>(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -194,7 +224,7 @@ const TasksTable = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
-    data: tasks,
+    data: personalTasks,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -209,12 +239,18 @@ const TasksTable = () => {
     },
   });
 
+  // useEffect(() => {
+  //   if (singleTaskDetail) {
+  //     editDialogTriggerRef.current?.click();
+  //   }
+  // }, [singleTaskDetail, selectedTaskId]);
+
   return (
     <>
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
           <DatePicker
-            className="w-[240px]"
+            className="w-full md:w-[240px]"
             placeholder="Filter by date..."
             date={
               table.getColumn("date")?.getFilterValue()
@@ -228,16 +264,22 @@ const TasksTable = () => {
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center justify-between gap-4">
-            <Dialog open={isOpenDialog} onOpenChange={setIsOpenDialog}>
-              <DialogTrigger asChild>
+            <Dialog
+              key="create"
+              open={isCreateDialogOpen}
+              onOpenChange={setIsCreateDialogOpen}
+            >
+              <DialogTrigger key="create" asChild>
                 <Button>Add New Task</Button>
               </DialogTrigger>
               <DialogContent aria-describedby={undefined}>
                 <DialogHeader>
-                  <DialogTitle>Create New Task Record</DialogTitle>
+                  <DialogTitle className="text-left">
+                    Create New Task Record
+                  </DialogTitle>
                 </DialogHeader>
                 <Separator />
-                <PersonalTaskForm setIsOpenDialog={setIsOpenDialog} />
+                <PersonalTaskForm setIsOpenDialog={setIsCreateDialogOpen} />
               </DialogContent>
             </Dialog>
           </div>
@@ -273,7 +315,32 @@ const TasksTable = () => {
           </DropdownMenu>
         </div>
       </div>
-      <DataTable table={table} columns={columns} />
+      <DataTable table={table} columns={columns} loading />
+      <Dialog
+        key="edit"
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+      >
+        <DialogTrigger
+          key="edit"
+          ref={editDialogTriggerRef}
+          asChild
+          className="h-0 w-0"
+        >
+          <Button className="h-0 w-0 p-0"></Button>
+        </DialogTrigger>
+        <DialogContent aria-describedby={undefined}>
+          <DialogHeader>
+            <DialogTitle>Update Task Record</DialogTitle>
+          </DialogHeader>
+          <Separator />
+          <PersonalTaskForm
+            isEditMode
+            setIsOpenDialog={setIsEditDialogOpen}
+            defaultData={singleTaskDetail}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

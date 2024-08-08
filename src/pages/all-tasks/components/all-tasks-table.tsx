@@ -12,7 +12,7 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import { statusWithIconMapping, tasks } from "@/constants";
+import { statusWithIconMapping } from "@/constants";
 import { format } from "date-fns";
 import { MixerVerticalIcon } from "@radix-ui/react-icons";
 import DatePicker from "@/components/ui/date-picker";
@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/select";
 import { useGetProjects } from "@/services/setup";
 import { cn } from "@/lib/utils";
+import { useGetAllTasks } from "@/services/task";
 
 const AllTasksTable = () => {
   const columns: ColumnDef<ITask>[] = [
@@ -53,21 +54,26 @@ const AllTasksTable = () => {
     //   },
     // },
     {
-      accessorKey: "staffId",
+      id: "staffId",
       header: () => {
-        return <div>Staff Id</div>;
+        return <div>Id</div>;
       },
       cell: ({ row }) => {
         return (
-          <div className="min-w-[90px] font-medium">{row.original.staffId}</div>
+          <div className="min-w-[90px] font-medium">
+            {row.original.staff?.staffId}
+          </div>
         );
       },
     },
     {
-      accessorKey: "staffName",
-      header: "Staff Name",
+      accessorKey: "staff",
+      header: "Name",
       cell: ({ row }) => {
-        return <div className="min-w-[120px]">{row.original.staffName}</div>;
+        return <div className="min-w-[120px]">{row.original.staff?.name}</div>;
+      },
+      filterFn: (row, _, filterValue) => {
+        return `${row.original.staff?.staffId}`.includes(`${filterValue}`);
       },
     },
     {
@@ -106,8 +112,9 @@ const AllTasksTable = () => {
       header: "Duration",
       cell: ({ row }) => {
         return (
-          <div className="min-w-[150px]">
-            {row.original.fromTime} - {row.original.toTime}
+          <div className="min-w-[140px]">
+            {row.original.fromTime}&nbsp;&nbsp;-&nbsp;&nbsp;
+            {row.original.toTime}
           </div>
         );
       },
@@ -126,14 +133,16 @@ const AllTasksTable = () => {
       accessorKey: "task",
       header: "Task",
       cell: ({ row }) => {
-        return <div className="min-w-[110px]">{row.original.task.name}</div>;
+        return (
+          <div className="min-w-[110px]">{row.original.mainTask.name}</div>
+        );
       },
     },
     {
       accessorKey: "subTask",
       header: "Sub-task",
       cell: ({ row }) => {
-        return <div className="min-w-[110px]">{row.original.subTask.name}</div>;
+        return <div className="min-w-[140px]">{row.original.subTask.name}</div>;
       },
     },
     {
@@ -144,7 +153,7 @@ const AllTasksTable = () => {
         return (
           <div className="flex min-w-[150px] items-center justify-start gap-2">
             {statusWithIconMapping[status]}
-            {status}
+            {+status === 1 ? "In Progress" : "Complete"}
           </div>
         );
       },
@@ -176,6 +185,9 @@ const AllTasksTable = () => {
     // },
   ];
 
+  const { data: allTasksResp } = useGetAllTasks();
+  const allTasksList = allTasksResp?.data ?? [];
+
   const { data: projectsResp } = useGetProjects();
   const projectsList = projectsResp?.data ?? [];
 
@@ -189,7 +201,7 @@ const AllTasksTable = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
-    data: tasks,
+    data: allTasksList,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -205,7 +217,7 @@ const AllTasksTable = () => {
   });
 
   const staffIdFilterVal =
-    (table.getColumn("staffId")?.getFilterValue() as string) ?? "";
+    (table.getColumn("staff")?.getFilterValue() as string) ?? "";
 
   const projectIdFilterVal =
     (table.getColumn("project")?.getFilterValue() as string) ?? "";
@@ -223,7 +235,7 @@ const AllTasksTable = () => {
             value={staffIdFilterVal}
             onChange={(e) => {
               table
-                .getColumn("staffId")
+                .getColumn("staff")
                 ?.setFilterValue(e.target.value.replace(/[^\d]/g, ""));
             }}
           />

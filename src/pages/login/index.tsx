@@ -76,7 +76,7 @@ const LoginPage = () => {
     <main className="flex h-[100dvh] w-full items-center justify-center">
       <img src={red} alt="" className="absolute left-0 top-0 w-[200px]" />
       <img src={blue} alt="" className="absolute bottom-0 right-0 w-[200px]" />
-      <section className="w-[500px] rounded-md border border-primary/80 px-6 py-12 shadow-md">
+      <section className="w-[500px] rounded-md border px-6 py-12 shadow-md">
         <div className="mb-8 flex w-full items-center justify-center gap-3">
           <img src={logo} alt="" className="w-[50px] rounded-sm" />
           <h2 className="text-4xl font-bold text-primary">

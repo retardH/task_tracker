@@ -24,10 +24,12 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   table: TableType<TData>;
+  loading?: boolean;
 }
 const DataTable = <TData, TValue>({
   columns,
   table,
+  loading,
 }: DataTableProps<TData, TValue>) => {
   const { pageIndex, pageSize } = table.getState().pagination;
   const rowCount = table.getRowCount();
@@ -49,7 +51,7 @@ const DataTable = <TData, TValue>({
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
-                      className="py-4 text-left text-white"
+                      className="py-2 text-left text-white"
                       key={header.id}
                     >
                       {header.isPlaceholder
@@ -81,11 +83,17 @@ const DataTable = <TData, TValue>({
                   ))}
                 </TableRow>
               ))
+            ) : loading ? (
+              <TableRow>
+                <TableCell colSpan={8} className="h-28 text-center">
+                  Loading...
+                </TableCell>
+              </TableRow>
             ) : (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-28 text-center"
                 >
                   No results.
                 </TableCell>
@@ -96,7 +104,9 @@ const DataTable = <TData, TValue>({
       </div>
       <div className="mt-4 flex items-center justify-between">
         <div className="flex items-center">
-          <span className="text-sm">Rows per page :&nbsp;&nbsp;</span>
+          <span className="hidden md:block md:text-sm">
+            Rows per page :&nbsp;&nbsp;
+          </span>
           <Select
             defaultValue={`${table.getState().pagination.pageSize}`}
             onValueChange={(val) => table.setPageSize(+val)}
@@ -115,7 +125,7 @@ const DataTable = <TData, TValue>({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 md:gap-6">
           <span className="text-sm">
             {table.getRowCount() === 0
               ? "0 item"

@@ -6,7 +6,12 @@ import AllTasksPage from "./pages/all-tasks/index.tsx";
 import MainLayout from "./components/layouts/main-layout.tsx";
 import LoginPage from "./pages/login/index.tsx";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  MutationCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import toast, { Toaster } from "react-hot-toast";
 
 import "./index.css";
 import ProtectedRoute from "./components/layouts/protected-route.tsx";
@@ -18,6 +23,11 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
     },
   },
+  mutationCache: new MutationCache({
+    onSuccess: () => {
+      toast.success("Success!");
+    },
+  }),
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -39,6 +49,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route path="/login" element={<LoginPage />} />
         </Routes>
       </BrowserRouter>
+      <Toaster position="top-center" />
     </QueryClientProvider>
   </React.StrictMode>,
 );

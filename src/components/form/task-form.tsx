@@ -31,11 +31,16 @@ import {
   useGetSubTaskTypes,
   useGetTaskTypes,
 } from "@/services/setup";
-import { useMutation } from "@tanstack/react-query";
-import { IPersonalTaskCreatePayload } from "@/models";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  IPersonalTaskCreatePayload,
+  IPersonalTaskUpdatePayload,
+  ITask,
+} from "@/models";
 import { fetcher } from "@/lib/fetcher";
 import { getAuthInfo } from "@/lib/utils";
 import SubmitButton from "../ui/submit-button";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   date: z.date({
@@ -71,12 +76,13 @@ const formSchema = z.object({
 
 interface PersonalTaskFormProps {
   isEditMode?: boolean;
-  defaultData?: z.infer<typeof formSchema>;
+  defaultData?: ITask;
   setIsOpenDialog?: (open: boolean) => void;
 }
 const PersonalTaskForm = ({
   isEditMode = false,
   setIsOpenDialog,
+  defaultData,
 }: PersonalTaskFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -84,10 +90,16 @@ const PersonalTaskForm = ({
       date: undefined,
       fromTime: "",
       toTime: "",
-      remark: "",
+      remark: defaultData?.remark ?? "",
+      // task: defaultData?.taskId ?? undefined,
+      // subTask: defaultData?.subTaskId ?? undefined,
+      // project: defaultData?.projectId ?? undefined,
+      // status: defaultData?.status ? `${defaultData.status}` : undefined,
     },
   });
 
+  console.log(form.getValues());
+  const queryClient = useQueryClient();
   const { userInfo } = getAuthInfo();
 
   const { data: projectsResp } = useGetProjects();
@@ -106,17 +118,65 @@ const PersonalTaskForm = ({
     },
     onSuccess: () => {
       console.info("Success!");
-      setIsOpenDialog?.(true);
+      queryClient.invalidateQueries({
+        queryKey: ["tasks", userInfo?.accountId],
+        exact: true,
+      });
+      setIsOpenDialog?.(false);
     },
     onError: (err) => {
       console.error(err);
     },
   });
 
+  const updatePersonalTask = useMutation({
+    mutationFn: async (payload: IPersonalTaskUpdatePayload) => {
+      return await fetcher("put", `/PersonalTask/`, payload);
+    },
+    onSuccess: () => {
+      console.info("Success!");
+      queryClient.invalidateQueries({
+        queryKey: ["tasks", userInfo?.accountId],
+        exact: true,
+      });
+      setIsOpenDialog?.(false);
+    },
+    onError: (err) => {
+      console.error(err);
+    },
+  });
+
+  useEffect(() => {
+    if (defaultData) {
+      form.setValue("remark", defaultData?.remark);
+      form.setValue("date", new Date(defaultData.date));
+      form.setValue("fromTime", defaultData.fromTime);
+      form.setValue("toTime", defaultData.toTime);
+      form.setValue("task", defaultData.taskId);
+      form.setValue("subTask", defaultData.subTaskId);
+      form.setValue("project", defaultData.projectId);
+      form.setValue("status", `${defaultData.status}`);
+    }
+  }, [defaultData, subTaskTypesList]);
+
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
     if (!isEditMode) {
       createPersonalTask.mutate({
+        staffId: userInfo?.accountId ?? "",
+        staffName: userInfo?.name ?? "",
+        date: data.date.toISOString(),
+        fromTime: data.fromTime,
+        toTime: data.toTime,
+        projectId: data.project,
+        taskId: data.task,
+        subTaskId: data.subTask,
+        status: +data.status,
+        remark: data.remark ?? "",
+        otherSubTask: "",
+      });
+    } else {
+      updatePersonalTask.mutate({
+        id: defaultData?.id ?? "",
         staffId: userInfo?.accountId ?? "",
         staffName: userInfo?.name ?? "",
         date: data.date.toISOString(),
@@ -140,36 +200,6 @@ const PersonalTaskForm = ({
             <h4 className="font-medium">{userInfo?.name}</h4>
             <h4 className="text-sm">{userInfo?.staffId}</h4>
           </div>
-          {/* <FormField
-            control={form.control}
-            name="staffId"
-            render={({ field }) => {
-              return (
-                <FormItem className="col-span-1">
-                  <FormLabel>Staff Id</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="eg, 014567" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-          <FormField
-            control={form.control}
-            name="staffName"
-            render={({ field }) => {
-              return (
-                <FormItem className="col-span-1">
-                  <FormLabel>Staff Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="eg, Mg Kyaw" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          /> */}
           <FormField
             control={form.control}
             name="date"
@@ -225,11 +255,12 @@ const PersonalTaskForm = ({
             name="task"
             render={({ field }) => {
               return (
-                <FormItem className="col-span-1">
+                <FormItem className="col-span-2 md:col-span-1">
                   <FormLabel>Task</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
+                      value={field.value}
                       defaultValue={field.value}
                     >
                       <SelectTrigger>
@@ -257,12 +288,13 @@ const PersonalTaskForm = ({
             name="subTask"
             render={({ field }) => {
               return (
-                <FormItem className="col-span-1">
+                <FormItem className="col-span-2 md:col-span-1">
                   <FormLabel>Sub Task</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value}
+                      // defaultValue={field.value}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select a sub task" />
@@ -274,7 +306,7 @@ const PersonalTaskForm = ({
                             subTaskTypesList.map((subTask) => (
                               <SelectItem
                                 key={subTask.subTaskId}
-                                value={`${subTask.subTaskId}`}
+                                value={subTask.subTaskId}
                               >
                                 {subTask.name}
                               </SelectItem>
@@ -296,11 +328,12 @@ const PersonalTaskForm = ({
             name="project"
             render={({ field }) => {
               return (
-                <FormItem className="col-span-1">
+                <FormItem className="col-span-2 md:col-span-1">
                   <FormLabel>Project</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
+                      value={field.value}
                       defaultValue={field.value}
                     >
                       <SelectTrigger>
@@ -331,11 +364,12 @@ const PersonalTaskForm = ({
             name="status"
             render={({ field }) => {
               return (
-                <FormItem className="col-span-1">
+                <FormItem className="col-span-2 md:col-span-1">
                   <FormLabel>Status</FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
+                      value={field.value}
                       defaultValue={field.value}
                     >
                       <SelectTrigger>
@@ -343,7 +377,6 @@ const PersonalTaskForm = ({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          {/* <SelectLabel>Project</SelectLabel> */}
                           {dummystatusList.map((status) => (
                             <SelectItem key={status.id} value={`${status.id}`}>
                               {status.name}
@@ -376,8 +409,10 @@ const PersonalTaskForm = ({
         </div>
         <div className="flex w-full justify-end">
           <SubmitButton
-            loading={createPersonalTask.isPending}
-            className="ml-auto mt-6"
+            loading={
+              createPersonalTask.isPending || updatePersonalTask.isPending
+            }
+            className="mt-6 w-full md:ml-auto md:w-auto"
           >
             Submit
           </SubmitButton>

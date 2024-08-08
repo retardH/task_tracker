@@ -4,13 +4,21 @@ import type {
   ISubTaskListResponse,
   ITaskListResponse,
 } from "@/models";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useGetProjects = () => {
   return useQuery<IProjectListResponse>({
     queryKey: ["/Project"],
     queryFn: async () => {
       return await fetcher("get", "/Project");
+    },
+  });
+};
+
+export const useCreateProject = () => {
+  return useMutation({
+    mutationFn: async (payload: any) => {
+      return await fetcher("post", "/Project", payload);
     },
   });
 };
@@ -24,6 +32,14 @@ export const useGetTaskTypes = () => {
   });
 };
 
+export const useCreateTaskType = () => {
+  return useMutation({
+    mutationFn: async (payload: any) => {
+      return await fetcher("post", "/Task", payload);
+    },
+  });
+};
+
 export const useGetSubTaskTypes = (taskTypeId: string) => {
   return useQuery<ISubTaskListResponse>({
     queryKey: ["/SubTask", taskTypeId],
@@ -31,5 +47,13 @@ export const useGetSubTaskTypes = (taskTypeId: string) => {
       return await fetcher("get", `/SubTask/${taskTypeId}`);
     },
     enabled: !!taskTypeId,
+  });
+};
+
+export const useCreateSubTaskType = () => {
+  return useMutation({
+    mutationFn: async (payload: any) => {
+      return await fetcher("post", "/SubTask", payload);
+    },
   });
 };

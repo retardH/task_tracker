@@ -4,16 +4,23 @@ export interface IResponse<TData> {
   data: TData;
 }
 
+export interface IStaff {
+  id: string;
+  name: string;
+  staffId: string;
+}
+
 export interface ITask {
+  id: string;
   staffId: string;
   date: Date;
-  staffName: string;
+  staff: IStaff;
   fromTime: string;
   toTime: string;
   status: string;
   remark: string;
   taskId: string;
-  task: {
+  mainTask: {
     id: string;
     name: string;
   };
@@ -55,6 +62,9 @@ export interface IPersonalTaskCreatePayload {
   otherSubTask: string;
 }
 
+export interface IPersonalTaskUpdatePayload extends IPersonalTaskCreatePayload {
+  id: string;
+}
 export interface ILoginpayload {
   id: string;
   password: string;
