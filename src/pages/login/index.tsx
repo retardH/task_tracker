@@ -58,6 +58,7 @@ const LoginPage = () => {
       {
         onSuccess: (data) => {
           storeAuthInfo({
+            accountId: data?.data.id ?? "",
             staffId: data?.data.staffId ?? "",
             name: data?.data.name ?? "",
             token: data?.data.accessToken ?? "",
@@ -78,7 +79,9 @@ const LoginPage = () => {
       <section className="w-[500px] rounded-md border border-primary/80 px-6 py-12 shadow-md">
         <div className="mb-8 flex w-full items-center justify-center gap-3">
           <img src={logo} alt="" className="w-[50px] rounded-sm" />
-          <h2 className="text-4xl font-bold text-primary">Smart Task Master</h2>
+          <h2 className="text-4xl font-bold text-primary">
+            Smart Task Tracker
+          </h2>
         </div>
         {login.isError && (
           <Alert variant="destructive" className="mb-4">

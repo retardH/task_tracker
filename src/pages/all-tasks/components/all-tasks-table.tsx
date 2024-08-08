@@ -214,7 +214,7 @@ const AllTasksTable = () => {
 
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
         <div className="flex gap-4">
           <Input
             className="w-[200px]"

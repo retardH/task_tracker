@@ -7,7 +7,7 @@ export const useLogin = () => {
     mutationFn: async (
       payload: ILoginpayload,
     ): Promise<
-      IResponse<{ accessToken: string; name: string; staffId: string }>
+      IResponse<{ accessToken: string; id: string; name: string; staffId: string }>
     > => {
       return await fetcher("post", "/Login", payload);
     },

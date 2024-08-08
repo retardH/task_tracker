@@ -6,22 +6,26 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const storeAuthInfo = ({
+  accountId,
   staffId,
   name,
   token,
 }: {
+  accountId: string;
   staffId: string;
   name: string;
   token: string;
 }) => {
-  localStorage.setItem("userInfo", JSON.stringify({ staffId, name }));
+  localStorage.setItem(
+    "userInfo",
+    JSON.stringify({ staffId, name, accountId }),
+  );
   localStorage.setItem("token", token);
 };
 
 export const getAuthInfo = () => {
-  const userInfo: { staffId: string; name: string } | null = JSON.parse(
-    localStorage.getItem("userInfo") ?? "{}",
-  );
+  const userInfo: { staffId: string; name: string; accountId: string } | null =
+    JSON.parse(localStorage.getItem("userInfo") ?? "{}");
   const token = localStorage.getItem("token");
 
   return { userInfo, token };

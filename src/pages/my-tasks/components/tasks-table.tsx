@@ -211,7 +211,7 @@ const TasksTable = () => {
 
   return (
     <>
-      <div className="mb-2 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
         <div>
           <DatePicker
             className="w-[240px]"
@@ -237,7 +237,7 @@ const TasksTable = () => {
                   <DialogTitle>Create New Task Record</DialogTitle>
                 </DialogHeader>
                 <Separator />
-                <PersonalTaskForm />
+                <PersonalTaskForm setIsOpenDialog={setIsOpenDialog} />
               </DialogContent>
             </Dialog>
           </div>

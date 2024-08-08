@@ -72,9 +72,12 @@ const formSchema = z.object({
 interface PersonalTaskFormProps {
   isEditMode?: boolean;
   defaultData?: z.infer<typeof formSchema>;
+  setIsOpenDialog?: (open: boolean) => void;
 }
-
-const PersonalTaskForm = ({ isEditMode = false }: PersonalTaskFormProps) => {
+const PersonalTaskForm = ({
+  isEditMode = false,
+  setIsOpenDialog,
+}: PersonalTaskFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -103,6 +106,7 @@ const PersonalTaskForm = ({ isEditMode = false }: PersonalTaskFormProps) => {
     },
     onSuccess: () => {
       console.info("Success!");
+      setIsOpenDialog?.(true);
     },
     onError: (err) => {
       console.error(err);
@@ -113,7 +117,7 @@ const PersonalTaskForm = ({ isEditMode = false }: PersonalTaskFormProps) => {
     console.log(data);
     if (!isEditMode) {
       createPersonalTask.mutate({
-        staffId: userInfo?.staffId ?? "",
+        staffId: userInfo?.accountId ?? "",
         staffName: userInfo?.name ?? "",
         date: data.date.toISOString(),
         fromTime: data.fromTime,
