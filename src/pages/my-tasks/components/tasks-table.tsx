@@ -102,7 +102,6 @@ const TasksTable = () => {
       sortingFn: (rowA, rowB) => {
         const rowADate = new Date(rowA.original.date).getTime();
         const rowBDate = new Date(rowB.original.date).getTime();
-        console.log(rowADate, rowBDate);
         return rowADate - rowBDate;
       },
     },
