@@ -80,14 +80,14 @@ const LoginPage = () => {
       <section className="hidden h-full w-1/2 flex-col items-center justify-center gap-4 bg-primary/90 md:flex">
         <img src={kbz} className="w-[200px]" />
 
-        <h1 className="text-4xl font-bold text-white">Hello Welcome...</h1>
+        <h1 className="text-4xl font-bold text-white">Welcome Back!</h1>
         <h3 className="font-sans text-4xl font-bold italic text-white">
-          Start tracking your work hours now!
+          Start tracking your work hours now.
         </h3>
       </section>
       <section className="flex w-full flex-col items-center justify-center md:w-1/2">
-        <div className="w-[500px] rounded-sm border px-10 py-10 shadow-2xl">
-          <div className="mb-2 flex w-full items-center justify-center gap-3">
+        <div className="w-[500px] rounded-md border px-10 py-16 shadow-md">
+          <div className="mb-4 flex w-full items-center justify-center gap-3">
             <img src={logo} alt="" className="w-[50px] rounded-sm" />
 
             <h2 className="text-4xl font-bold text-primary">
@@ -102,7 +102,7 @@ const LoginPage = () => {
             </Alert>
           )}
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
                 name="staffId"
