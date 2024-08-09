@@ -5,7 +5,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { ExitIcon, HamburgerMenuIcon } from "@radix-ui/react-icons";
@@ -13,16 +12,9 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { clearLocalStorage, getAuthInfo } from "@/lib/utils";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTrigger,
-} from "../ui/drawer";
-import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
@@ -48,8 +40,8 @@ const Header = () => {
           </h2>
         </div>
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetTrigger asChild>
-            <Button size="icon" variant="secondary">
+          <SheetTrigger className="md:hidden" asChild>
+            <Button size="icon" variant="secondary" className="md:hidden">
               <HamburgerMenuIcon />
             </Button>
           </SheetTrigger>
@@ -68,7 +60,7 @@ const Header = () => {
                 <Button
                   variant="link"
                   size="default"
-                  className="text-md px-0 text-zinc-900 no-underline"
+                  className="text-md px-0 text-primary/90 hover:text-primary"
                   onClick={() => {
                     setIsSheetOpen(false);
                   }}
@@ -76,7 +68,7 @@ const Header = () => {
                   <NavLink
                     to="/"
                     className={({ isActive }) =>
-                      isActive ? "text-primary" : ""
+                      isActive ? "text-primary underline" : ""
                     }
                   >
                     My Tasks
@@ -87,12 +79,15 @@ const Header = () => {
                 <Button
                   variant="link"
                   size="default"
-                  className="text-md px-0 text-zinc-900 no-underline"
+                  className="text-md px-0 text-primary/90 hover:text-primary"
+                  onClick={() => {
+                    setIsSheetOpen(false);
+                  }}
                 >
                   <NavLink
                     to="/all-tasks"
                     className={({ isActive }) =>
-                      isActive ? "text-primary" : ""
+                      isActive ? "text-primary underline" : ""
                     }
                   >
                     All Tasks
@@ -103,44 +98,60 @@ const Header = () => {
           </SheetContent>
         </Sheet>
         <div className="hidden items-start gap-4 md:flex">
-          <Button variant="link" size="default" className="px-0 text-white">
+          <Button
+            variant="link"
+            size="default"
+            className="px-0 text-zinc-200 hover:text-white"
+          >
             <NavLink
               to="/"
-              className={({ isActive }) => (isActive ? "text-amber-400" : "")}
+              className={({ isActive }) =>
+                isActive ? "text-white underline" : ""
+              }
             >
               My Tasks
             </NavLink>
           </Button>
-          <Button variant="link" size="default" className="px-0 text-white">
+          <Button
+            variant="link"
+            size="default"
+            className="px-0 text-zinc-200 hover:text-white"
+          >
             <NavLink
               to="/all-tasks"
-              className={({ isActive }) => (isActive ? "text-amber-400" : "")}
+              className={({ isActive }) =>
+                isActive ? "text-white underline" : ""
+              }
             >
               All Tasks
             </NavLink>
           </Button>
         </div>
       </div>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Avatar className="size-10 md:size-12">
-            <AvatarImage
-              src="https://png.pngtree.com/png-vector/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"
-              alt="@shadcn"
-            />
-            <AvatarFallback>{userInfo?.name?.[0]}</AvatarFallback>
-          </Avatar>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="px-2" align="start">
-          <h4 className="text-sm font-semibold">{userInfo?.name}</h4>
-          <h6 className="text-xs text-muted-foreground">{userInfo?.staffId}</h6>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="justify-center gap-2" onClick={logout}>
-            <ExitIcon />
-            <span>Logout</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex items-center gap-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="flex items-center gap-2">
+              <div>
+                <h4 className="text-sm font-semibold text-zinc-100">
+                  {userInfo?.name}
+                </h4>
+                <h6 className="text-xs text-zinc-200">{userInfo?.staffId}</h6>
+              </div>
+              <Avatar className="size-10 md:size-12">
+                <AvatarImage src="https://gitub.com/cn.png" alt="@shadcn" />
+                <AvatarFallback>{userInfo?.name?.[0]}</AvatarFallback>
+              </Avatar>
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="px-2" align="start">
+            <DropdownMenuItem className="justify-center gap-2" onClick={logout}>
+              <ExitIcon />
+              <span>Logout</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </header>
   );
 };

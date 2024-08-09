@@ -85,7 +85,10 @@ const DataTable = <TData, TValue>({
               ))
             ) : loading ? (
               <TableRow>
-                <TableCell colSpan={8} className="h-28 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-28 text-center"
+                >
                   Loading...
                 </TableCell>
               </TableRow>

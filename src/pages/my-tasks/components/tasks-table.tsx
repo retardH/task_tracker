@@ -152,7 +152,9 @@ const TasksTable = () => {
       header: "Remark",
       cell: ({ row }) => {
         return (
-          <div className="min-w-[240px] text-left">{row.original.remark}</div>
+          <div className="min-w-[240px] text-left">
+            {row.original.remark || "-"}
+          </div>
         );
       },
     },
@@ -196,7 +198,11 @@ const TasksTable = () => {
 
   const editDialogTriggerRef = useRef<HTMLButtonElement>(null);
   const { userInfo } = getAuthInfo();
-  const { data: personalTasksResp } = useGetTasksByStaffId(userInfo?.accountId);
+  const {
+    data: personalTasksResp,
+    isLoading: isTasksLoading,
+    isRefetching: isTasksRefetching,
+  } = useGetTasksByStaffId(userInfo?.accountId);
   const personalTasks = personalTasksResp?.data ?? [];
 
   const deletePersonalTask = useDeleteTaskById();
@@ -309,7 +315,11 @@ const TasksTable = () => {
           </DropdownMenu>
         </div>
       </div>
-      <DataTable table={table} columns={columns} loading />
+      <DataTable
+        table={table}
+        columns={columns}
+        loading={isTasksLoading || isTasksRefetching}
+      />
       <Dialog
         key="edit"
         open={isEditDialogOpen}

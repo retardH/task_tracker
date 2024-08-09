@@ -163,7 +163,9 @@ const AllTasksTable = () => {
       header: "Remark",
       cell: ({ row }) => {
         return (
-          <div className="min-w-[300px] text-left">{row.original.remark}</div>
+          <div className="min-w-[300px] text-left">
+            {row.original.remark || "-"}
+          </div>
         );
       },
     },
@@ -185,7 +187,7 @@ const AllTasksTable = () => {
     // },
   ];
 
-  const { data: allTasksResp } = useGetAllTasks();
+  const { data: allTasksResp, isLoading: isAllTasksLoading } = useGetAllTasks();
   const allTasksList = allTasksResp?.data ?? [];
 
   const { data: projectsResp } = useGetProjects();
@@ -329,7 +331,7 @@ const AllTasksTable = () => {
           </DropdownMenu>
         </div>
       </div>
-      <DataTable table={table} columns={columns} />
+      <DataTable table={table} columns={columns} loading={isAllTasksLoading} />
     </div>
   );
 };
