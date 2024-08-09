@@ -36,6 +36,25 @@ export const clearLocalStorage = () => {
   localStorage.removeItem("token");
 };
 
+export const formatTime = (time: string) => {
+  const [hour, minute] = time.split(":");
+  if (+hour === 0) {
+    return `12:${minute} PM`;
+  }
+  if (+hour <= 12) {
+    return `${hour}:${minute} AM`;
+  }
+
+  if (+hour > 12) {
+    return `${+hour - 12 >= 10 ? +hour - 12 : "0" + (+hour - 12)}:${minute} PM`;
+  }
+};
+
+export const getMinutesFromTimeStr = (time: string) => {
+  const [hour, minute] = time.split(":");
+  const totalMins = +hour * 60 + +minute;
+  return totalMins;
+};
 // export const getStatusColor = (status: EStatus) => {
 //   const STATUS_COLOR: Record<EStatus, string> = {
 //     [EStatus.InProgress]: "text-blue-600",
