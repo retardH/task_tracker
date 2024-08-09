@@ -7,11 +7,14 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   type PaginationState,
+  SortingState,
   useReactTable,
   type VisibilityState,
 } from "@tanstack/react-table";
 import {
+  CaretSortIcon,
   MixerVerticalIcon,
   Pencil1Icon,
   TrashIcon,
@@ -37,7 +40,7 @@ import {
 import PersonalTaskForm from "@/components/form/task-form";
 import DatePicker from "@/components/ui/date-picker";
 import { Separator } from "@/components/ui/separator";
-import { getAuthInfo } from "@/lib/utils";
+import { formatTime, getAuthInfo } from "@/lib/utils";
 import {
   useDeleteTaskById,
   useGetSingleTaskById,
@@ -71,7 +74,18 @@ const TasksTable = () => {
     // },
     {
       accessorKey: "date",
-      header: "Date",
+      header: ({ column }) => {
+        return (
+          <div className="flex items-center gap-2">
+            <h4>Date</h4>
+            <CaretSortIcon
+              onClick={() => {
+                column.toggleSorting(column.getIsSorted() === "asc");
+              }}
+            />
+          </div>
+        );
+      },
       cell: ({ row }) => {
         return (
           <div className="min-w-[120px]">
@@ -84,6 +98,12 @@ const TasksTable = () => {
           format(row.original.date, "dd MMMM, yyyy") ===
           format(filterValue as string, "dd MMMM, yyyy")
         );
+      },
+      sortingFn: (rowA, rowB) => {
+        const rowADate = new Date(rowA.original.date).getTime();
+        const rowBDate = new Date(rowB.original.date).getTime();
+        console.log(rowADate, rowBDate);
+        return rowADate - rowBDate;
       },
     },
     // {
@@ -105,8 +125,9 @@ const TasksTable = () => {
       header: "Duration",
       cell: ({ row }) => {
         return (
-          <div className="min-w-[120px]">
-            {row.original.fromTime} - {row.original.toTime}
+          <div className="min-w-[160px]">
+            {formatTime(row.original.fromTime)} -{" "}
+            {formatTime(row.original.toTime)}
           </div>
         );
       },
@@ -115,7 +136,7 @@ const TasksTable = () => {
       accessorKey: "project",
       header: "Project",
       cell: ({ row }) => {
-        return <div className="min-w-[100px]">{row.original.project.name}</div>;
+        return <div className="min-w-[140px]">{row.original.project.name}</div>;
       },
     },
     {
@@ -123,7 +144,7 @@ const TasksTable = () => {
       header: "Task",
       cell: ({ row }) => {
         return (
-          <div className="min-w-[110px]">{row.original.mainTask.name}</div>
+          <div className="min-w-[120px]">{row.original.mainTask.name}</div>
         );
       },
     },
@@ -140,7 +161,7 @@ const TasksTable = () => {
       cell: ({ row }) => {
         const status = row.original.status;
         return (
-          <div className="flex min-w-[150px] items-center justify-start gap-2">
+          <div className="flex min-w-[120px] items-center justify-start gap-2">
             {statusWithIconMapping[status]}
             {+status === 1 ? "In Progress" : "Complete"}
           </div>
@@ -152,7 +173,9 @@ const TasksTable = () => {
       header: "Remark",
       cell: ({ row }) => {
         return (
-          <div className="min-w-[240px] text-left">{row.original.remark}</div>
+          <div className="min-w-[240px] text-left">
+            {row.original.remark || "-"}
+          </div>
         );
       },
     },
@@ -196,7 +219,11 @@ const TasksTable = () => {
 
   const editDialogTriggerRef = useRef<HTMLButtonElement>(null);
   const { userInfo } = getAuthInfo();
-  const { data: personalTasksResp } = useGetTasksByStaffId(userInfo?.accountId);
+  const {
+    data: personalTasksResp,
+    isLoading: isTasksLoading,
+    isRefetching: isTasksRefetching,
+  } = useGetTasksByStaffId(userInfo?.accountId);
   const personalTasks = personalTasksResp?.data ?? [];
 
   const deletePersonalTask = useDeleteTaskById();
@@ -216,6 +243,12 @@ const TasksTable = () => {
   const [visibilityState, setVisibilityState] = useState<VisibilityState>({});
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sortingState, setSortingState] = useState<SortingState>([
+    {
+      id: "date",
+      desc: true,
+    },
+  ]);
 
   const table = useReactTable({
     data: personalTasks,
@@ -223,21 +256,18 @@ const TasksTable = () => {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     onPaginationChange: setPagination,
     onColumnVisibilityChange: setVisibilityState,
     onColumnFiltersChange: setColumnFilters,
+    onSortingChange: setSortingState,
     state: {
       pagination: pagination,
       columnVisibility: visibilityState,
       columnFilters: columnFilters,
+      sorting: sortingState,
     },
   });
-
-  // useEffect(() => {
-  //   if (singleTaskDetail) {
-  //     editDialogTriggerRef.current?.click();
-  //   }
-  // }, [singleTaskDetail, selectedTaskId]);
 
   return (
     <>
@@ -309,7 +339,11 @@ const TasksTable = () => {
           </DropdownMenu>
         </div>
       </div>
-      <DataTable table={table} columns={columns} loading />
+      <DataTable
+        table={table}
+        columns={columns}
+        loading={isTasksLoading || isTasksRefetching}
+      />
       <Dialog
         key="edit"
         open={isEditDialogOpen}

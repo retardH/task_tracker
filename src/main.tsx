@@ -15,6 +15,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 import "./index.css";
 import ProtectedRoute from "./components/layouts/protected-route.tsx";
+import SetupPage from "./pages/setup/index.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,6 +46,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           >
             <Route index element={<MainPage />} />
             <Route path="/all-tasks" element={<AllTasksPage />} />
+            <Route path="/setup" element={<SetupPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
         </Routes>

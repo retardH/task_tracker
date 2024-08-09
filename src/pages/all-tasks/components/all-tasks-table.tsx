@@ -7,14 +7,16 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   type PaginationState,
+  SortingState,
   useReactTable,
   type VisibilityState,
 } from "@tanstack/react-table";
 import { useState } from "react";
 import { statusWithIconMapping } from "@/constants";
 import { format } from "date-fns";
-import { MixerVerticalIcon } from "@radix-ui/react-icons";
+import { CaretSortIcon, MixerVerticalIcon } from "@radix-ui/react-icons";
 import DatePicker from "@/components/ui/date-picker";
 import {
   DropdownMenu,
@@ -34,7 +36,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetProjects } from "@/services/setup";
-import { cn } from "@/lib/utils";
+import { cn, formatTime } from "@/lib/utils";
 import { useGetAllTasks } from "@/services/task";
 
 const AllTasksTable = () => {
@@ -78,10 +80,21 @@ const AllTasksTable = () => {
     },
     {
       accessorKey: "date",
-      header: "Date",
+      header: ({ column }) => {
+        return (
+          <div className="flex items-center gap-2">
+            <h4>Date</h4>
+            <CaretSortIcon
+              onClick={() => {
+                column.toggleSorting(column.getIsSorted() === "asc");
+              }}
+            />
+          </div>
+        );
+      },
       cell: ({ row }) => {
         return (
-          <div className="min-w-[140px]">
+          <div className="min-w-[120px]">
             {format(row.original.date, "dd MMMM, yyyy")}
           </div>
         );
@@ -91,6 +104,11 @@ const AllTasksTable = () => {
           format(row.original.date, "dd MMMM, yyyy") ===
           format(filterValue as string, "dd MMMM, yyyy")
         );
+      },
+      sortingFn: (rowA, rowB) => {
+        const rowADate = new Date(rowA.original.date).getTime();
+        const rowBDate = new Date(rowB.original.date).getTime();
+        return rowADate - rowBDate;
       },
     },
     // {
@@ -112,9 +130,9 @@ const AllTasksTable = () => {
       header: "Duration",
       cell: ({ row }) => {
         return (
-          <div className="min-w-[140px]">
-            {row.original.fromTime}&nbsp;&nbsp;-&nbsp;&nbsp;
-            {row.original.toTime}
+          <div className="min-w-[160px]">
+            {formatTime(row.original.fromTime)}&nbsp;&nbsp;-&nbsp;&nbsp;
+            {formatTime(row.original.toTime)}
           </div>
         );
       },
@@ -123,7 +141,7 @@ const AllTasksTable = () => {
       accessorKey: "project",
       header: "Project",
       cell: ({ row }) => {
-        return <div className="min-w-[100px]">{row.original.project.name}</div>;
+        return <div className="min-w-[140px]">{row.original.project.name}</div>;
       },
       filterFn: (row, _, filterValue) => {
         return row.original.project.id === filterValue;
@@ -134,7 +152,7 @@ const AllTasksTable = () => {
       header: "Task",
       cell: ({ row }) => {
         return (
-          <div className="min-w-[110px]">{row.original.mainTask.name}</div>
+          <div className="min-w-[120px]">{row.original.mainTask.name}</div>
         );
       },
     },
@@ -151,7 +169,7 @@ const AllTasksTable = () => {
       cell: ({ row }) => {
         const status = row.original.status;
         return (
-          <div className="flex min-w-[150px] items-center justify-start gap-2">
+          <div className="flex min-w-[120px] items-center justify-start gap-2">
             {statusWithIconMapping[status]}
             {+status === 1 ? "In Progress" : "Complete"}
           </div>
@@ -163,7 +181,9 @@ const AllTasksTable = () => {
       header: "Remark",
       cell: ({ row }) => {
         return (
-          <div className="min-w-[300px] text-left">{row.original.remark}</div>
+          <div className="min-w-[300px] text-left">
+            {row.original.remark || "-"}
+          </div>
         );
       },
     },
@@ -185,7 +205,7 @@ const AllTasksTable = () => {
     // },
   ];
 
-  const { data: allTasksResp } = useGetAllTasks();
+  const { data: allTasksResp, isLoading: isAllTasksLoading } = useGetAllTasks();
   const allTasksList = allTasksResp?.data ?? [];
 
   const { data: projectsResp } = useGetProjects();
@@ -199,6 +219,12 @@ const AllTasksTable = () => {
   const [visibilityState, setVisibilityState] = useState<VisibilityState>({});
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sortingState, setSortingState] = useState<SortingState>([
+    {
+      id: "date",
+      desc: true,
+    },
+  ]);
 
   const table = useReactTable({
     data: allTasksList,
@@ -206,13 +232,16 @@ const AllTasksTable = () => {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     onPaginationChange: setPagination,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setVisibilityState,
+    onSortingChange: setSortingState,
     state: {
       pagination: pagination,
       columnVisibility: visibilityState,
       columnFilters: columnFilters,
+      sorting: sortingState,
     },
   });
 
@@ -231,7 +260,7 @@ const AllTasksTable = () => {
           <Input
             className="w-full md:w-[200px]"
             name="staffId"
-            placeholder="Filter by Staff Id..."
+            placeholder="Search by Staff Id..."
             value={staffIdFilterVal}
             onChange={(e) => {
               table
@@ -329,7 +358,7 @@ const AllTasksTable = () => {
           </DropdownMenu>
         </div>
       </div>
-      <DataTable table={table} columns={columns} />
+      <DataTable table={table} columns={columns} loading={isAllTasksLoading} />
     </div>
   );
 };

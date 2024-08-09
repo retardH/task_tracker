@@ -38,7 +38,7 @@ import {
   ITask,
 } from "@/models";
 import { fetcher } from "@/lib/fetcher";
-import { getAuthInfo } from "@/lib/utils";
+import { getAuthInfo, getMinutesFromTimeStr } from "@/lib/utils";
 import SubmitButton from "../ui/submit-button";
 import { useEffect } from "react";
 
@@ -98,7 +98,6 @@ const PersonalTaskForm = ({
     },
   });
 
-  console.log(form.getValues());
   const queryClient = useQueryClient();
   const { userInfo } = getAuthInfo();
 
@@ -160,6 +159,15 @@ const PersonalTaskForm = ({
   }, [defaultData, subTaskTypesList]);
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
+    const fromTimeMins = getMinutesFromTimeStr(data.fromTime);
+    const toTimeMins = getMinutesFromTimeStr(data.toTime);
+
+    if (toTimeMins < fromTimeMins) {
+      form.setError("toTime", {
+        message: "To time cannot be greater than from time",
+      });
+      return;
+    }
     if (!isEditMode) {
       createPersonalTask.mutate({
         staffId: userInfo?.accountId ?? "",
